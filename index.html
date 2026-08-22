@@ -3,39 +3,46 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="description" content="填上你把居留申请交上去的日期，看看新西兰移民局大概什么时候会给结果——基于移民局公开月度统计的排队论估算工具。">
-<meta name="theme-color" content="#f5f5f7">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='46' fill='%230071e3'/%3E%3Cpath d='M28 52l14 14 30-30' stroke='white' stroke-width='9' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
-<title>技术移民签证什么时候有结果 · 估算工具</title>
+<meta name="description" content="填上你把居留申请交上去的日期，看看新西兰移民局大概什么时候会给结果——基于移民局公开月度统计的排队论估算工具。" data-i18n-attr="content:meta.description">
+<meta name="theme-color" media="(prefers-color-scheme:light)" content="#f2f2f7">
+<meta name="theme-color" media="(prefers-color-scheme:dark)" content="#000000">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='46' fill='%23007aff'/%3E%3Cpath d='M28 52l14 14 30-30' stroke='white' stroke-width='9' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+<title data-i18n-attr="text:meta.title">技术移民签证什么时候有结果 · 估算工具</title>
 <style>
 :root{
-  --ground:#f5f5f7; --surface:#ffffff; --surface-2:#fafafa;
-  --ink:#1d1d1f; --ink-2:#6e6e73; --ink-3:#707070;
-  --accent:#0071e3; --accent-ink:#0060c2;
-  --sep:rgba(0,0,0,.08); --glass:rgba(255,255,255,.72);
-  --shadow:0 1px 2px rgba(0,0,0,.03), 0 8px 32px -8px rgba(0,0,0,.06);
-  --warn:#a54c0a; --warn-soft:#fbe6d2;
-  --good:#187a37; --good-soft:#d9f2e0;
-  --r-card:18px; --r-inner:12px; --r-pill:980px;
+  --ground:#f2f2f7; --surface:#ffffff; --surface-2:#efeff0;
+  --ink:#1d1d1f; --ink-2:rgba(60,60,67,.75); --ink-3:rgba(60,60,67,.72);
+  --accent:#007aff; --accent-ink:#0064d2;
+  --sep:rgba(60,60,67,.29); --glass:rgba(255,255,255,.72);
+  --fill-1:rgba(120,120,128,.20); --fill-2:rgba(120,120,128,.16);
+  --fill-3:rgba(120,120,128,.12); --fill-4:rgba(120,120,128,.08);
+  --card-edge:inset 0 0 0 .5px rgba(0,0,0,.04);
+  --warn:#b25000; --warn-soft:#fbe6d2;
+  --good:#1b7f3b; --good-soft:#d9f2e0;
+  --r-card:10px; --r-inner:6px; --r-pill:980px;
   --ease:cubic-bezier(.32,.72,0,1); --dur:320ms;
 }
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
-  --ground:#0b0b0c; --surface:#1c1c1e; --surface-2:#262629;
-  --ink:#f5f5f7; --ink-2:#a1a1a6; --ink-3:#848484;
-  --accent:#2997ff; --accent-ink:#6cb6ff;
-  --sep:rgba(255,255,255,.12); --glass:rgba(28,28,30,.72);
-  --shadow:0 1px 2px rgba(0,0,0,.3), 0 8px 32px -8px rgba(0,0,0,.5);
+  --ground:#000000; --surface:#1c1c1e; --surface-2:#2c2c2e;
+  --ink:#f5f5f7; --ink-2:rgba(235,235,245,.60); --ink-3:rgba(235,235,245,.55);
+  --accent:#0a84ff; --accent-ink:#6cb6ff;
+  --sep:rgba(84,84,88,.65); --glass:rgba(28,28,30,.72);
+  --fill-1:rgba(120,120,128,.36); --fill-2:rgba(120,120,128,.32);
+  --fill-3:rgba(120,120,128,.24); --fill-4:rgba(120,120,128,.18);
+  --card-edge:inset 0 0 0 .5px rgba(255,255,255,.08);
   --warn:#ff9f0a; --warn-soft:#3d2c14;
-  --good:#32d74b; --good-soft:#123822;
+  --good:#30d158; --good-soft:#123822;
 }}
 :root[data-theme="dark"]{
-  --ground:#0b0b0c; --surface:#1c1c1e; --surface-2:#262629;
-  --ink:#f5f5f7; --ink-2:#a1a1a6; --ink-3:#848484;
-  --accent:#2997ff; --accent-ink:#6cb6ff;
-  --sep:rgba(255,255,255,.12); --glass:rgba(28,28,30,.72);
-  --shadow:0 1px 2px rgba(0,0,0,.3), 0 8px 32px -8px rgba(0,0,0,.5);
+  --ground:#000000; --surface:#1c1c1e; --surface-2:#2c2c2e;
+  --ink:#f5f5f7; --ink-2:rgba(235,235,245,.60); --ink-3:rgba(235,235,245,.55);
+  --accent:#0a84ff; --accent-ink:#6cb6ff;
+  --sep:rgba(84,84,88,.65); --glass:rgba(28,28,30,.72);
+  --fill-1:rgba(120,120,128,.36); --fill-2:rgba(120,120,128,.32);
+  --fill-3:rgba(120,120,128,.24); --fill-4:rgba(120,120,128,.18);
+  --card-edge:inset 0 0 0 .5px rgba(255,255,255,.08);
   --warn:#ff9f0a; --warn-soft:#3d2c14;
-  --good:#32d74b; --good-soft:#123822;
+  --good:#30d158; --good-soft:#123822;
 }
 *{box-sizing:border-box}
 html{-webkit-text-size-adjust:100%}
@@ -45,152 +52,183 @@ body{
   font-size:17px; line-height:1.6; -webkit-font-smoothing:antialiased;
   font-variant-numeric:tabular-nums;
 }
-.wrap{max-width:760px;margin:0 auto;padding:48px 20px 96px}
+.wrap{max-width:820px;margin:0 auto;padding:48px 20px 96px}
 .skip-link{position:absolute;left:-9999px;top:0;background:var(--accent);color:#fff;padding:10px 18px;
   border-radius:0 0 10px 0;z-index:999;font-weight:600;text-decoration:none}
 .skip-link:focus{left:0}
-section{margin-top:64px}
+section{margin-top:32px}
 section:first-of-type{margin-top:0}
-h1{font-weight:700;font-size:clamp(28px,5vw,40px);line-height:1.18;margin:0 0 .35em;letter-spacing:-.015em;text-wrap:balance}
+section.gap-lg{margin-top:56px}
+.grouptitle{font-size:13px;font-weight:600;color:var(--ink-2);text-transform:none;
+  margin:0 0 7px 16px;letter-spacing:0}
+.cmp-sub{margin:0 0 16px}
+summary h2{all:unset;display:block}
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;
+  clip-path:inset(50%);white-space:nowrap;border:0}
+h1{font-weight:700;font-size:clamp(28px,5vw,40px);line-height:1.18;margin:0 0 .35em;letter-spacing:normal;text-wrap:balance}
 .lede{color:var(--ink-2);max-width:56ch;margin:0 0 28px;font-size:17px}
-.card{background:var(--surface);border-radius:var(--r-card);box-shadow:var(--shadow)}
-.pad{padding:28px 28px}
-@media(max-width:600px){.pad{padding:22px 20px}}
+.card{background:var(--surface);border-radius:var(--r-card);box-shadow:var(--card-edge)}
+.pad{padding:20px 20px}
+@media(max-width:600px){.pad{padding:16px 16px}}
 .row{display:flex;flex-wrap:wrap;gap:18px;align-items:flex-start}
 label.fld{display:flex;flex-direction:column;gap:8px;flex:1;min-width:220px}
 .lbl{font-size:15px;font-weight:600;color:var(--ink)}
-.hint{font-size:13.5px;color:var(--ink-2);margin:0}
+.hint{font-size:13px;color:var(--ink-2);margin:0}
 input[type=date]{
   font:inherit;font-size:19px;color:var(--ink);font-variant-numeric:tabular-nums;
-  background:var(--surface-2);border:none;border-radius:var(--r-inner);padding:12px 14px;
-  min-width:190px;transition:box-shadow var(--dur) var(--ease);
+  background:var(--surface);border:none;border-radius:var(--r-inner);padding:11px 14px;
+  min-width:190px;box-shadow:inset 0 0 0 .5px var(--sep), inset 0 1px 2px rgba(0,0,0,.04);
+  transition:box-shadow var(--dur) var(--ease);
 }
-input[type=date]:hover{box-shadow:inset 0 0 0 1px var(--sep)}
-input[type=date]:focus-visible,button:focus-visible,input[type=range]:focus-visible,.chip:focus-visible,.cmpcard:focus-visible
+input[type=date]:hover{box-shadow:inset 0 0 0 1px var(--ink-3), inset 0 1px 2px rgba(0,0,0,.04)}
+input[type=date]:focus-visible,button:focus-visible,input[type=range]:focus-visible,.chip:focus-visible,
+.cmpcard:focus-visible,summary:focus-visible,a:focus-visible,.switch:focus-visible
   {outline:2px solid var(--accent);outline-offset:2px}
-.notice{margin-top:16px;padding-top:14px;border-top:1px solid var(--sep);font-size:14px;color:var(--ink-2);line-height:1.7}
+.notice{margin-top:16px;padding-top:14px;border-top:.5px solid var(--sep);font-size:15px;color:var(--ink-2);line-height:1.7}
 .notice b{color:var(--ink)}
 
-/* ---- 玻璃分段控件 ---- */
-.chips{display:inline-flex;gap:2px;padding:3px;border-radius:var(--r-pill);
-  background:var(--glass);backdrop-filter:saturate(180%) blur(20px);-webkit-backdrop-filter:saturate(180%) blur(20px);
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.5), var(--shadow);}
-:root[data-theme="dark"] .chips,@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .chips{box-shadow:inset 0 1px 0 rgba(255,255,255,.08), var(--shadow)}}
-.chip{font:inherit;font-size:13.5px;font-weight:600;padding:8px 14px;border-radius:var(--r-pill);border:none;
+/* ---- 分段控件（实色轨道——毛玻璃在不透明卡片内部不成立） ---- */
+.chips{display:inline-flex;gap:0;padding:2px;border-radius:var(--r-pill);background:var(--fill-3)}
+.chip{font:inherit;font-size:13px;font-weight:600;padding:7px 14px;border-radius:var(--r-pill);border:none;
   background:transparent;color:var(--ink-2);cursor:pointer;transition:background var(--dur) var(--ease),color var(--dur) var(--ease),transform 120ms var(--ease)}
-.chip:hover{background:rgba(127,127,127,.12)}
+.chip:hover{background:var(--fill-4)}
 .chip:active{transform:scale(.98)}
-.chip[aria-pressed="true"]{background:var(--surface);color:var(--ink);box-shadow:0 1px 4px rgba(0,0,0,.12)}
-:root[data-theme="dark"] .chip[aria-pressed="true"],@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .chip[aria-pressed="true"]{background:#3a3a3d}}
+.chip[aria-pressed="true"]{background:var(--surface);color:var(--ink);box-shadow:0 3px 8px rgba(0,0,0,.12),0 0 0 .5px rgba(0,0,0,.04)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .chip[aria-pressed="true"]{background:#636366;box-shadow:none}}
+:root[data-theme="dark"] .chip[aria-pressed="true"]{background:#636366;box-shadow:none}
 
 /* ---- 答案区 ---- */
 .answer{text-align:center;padding:40px 24px 34px}
-.cap{font-size:14px;font-weight:600;color:var(--ink-2)}
-.big{font-size:clamp(32px,7vw,52px);font-weight:700;line-height:1.1;margin:.2em 0 .12em;letter-spacing:-.02em;
+.cap{font-size:13px;font-weight:600;color:var(--ink-2)}
+.big{font-size:clamp(34px,7vw,52px);font-weight:700;line-height:1.1;margin:.2em 0 .12em;letter-spacing:normal;
   text-wrap:balance}
-.big .yr{display:block;font-size:16px;font-weight:600;color:var(--ink-2);margin-bottom:4px}
+.big .num{letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+.big .yr{display:block;font-size:15px;font-weight:600;color:var(--ink-2);margin-bottom:4px;letter-spacing:-.01em}
 .fadenum{transition:opacity .18s var(--ease),filter .18s var(--ease)}
 .fadenum.swap{opacity:0;filter:blur(4px)}
-.sub{color:var(--ink-2);font-size:16px}
-.softer{color:var(--ink-3);font-size:14px;margin-top:2px}
-.banner{margin:18px auto 0;max-width:52ch;padding:12px 18px;border-radius:var(--r-inner);background:var(--warn-soft);color:var(--warn);
-  font-size:14px;line-height:1.6;text-align:left}
+.sub{color:var(--ink-2);font-size:17px}
+.softer{color:var(--ink-3);font-size:13px;margin-top:2px}
+.banner{margin:18px auto 0;padding:12px 18px;border-radius:var(--r-inner);background:var(--warn-soft);color:var(--warn);
+  font-size:15px;line-height:1.6;text-align:left;max-width:34em;margin-inline:auto}
 .banner.ok{background:var(--good-soft);color:var(--good)}
+.banner p{margin:0 0 6px}
+.banner p:last-child{margin-bottom:0}
+#banner-result{background:var(--fill-4);color:var(--ink-2)}
 .timeline{margin-top:28px}
-.tl-caption{display:flex;justify-content:space-between;font-size:13.5px;color:var(--ink-2);margin-top:6px}
+.tl-caption{display:flex;justify-content:space-between;font-size:13px;color:var(--ink-2);margin-top:6px}
 .tl-svg{width:100%;height:auto;overflow:visible}
 .seg-wrap{margin-top:22px;display:flex;justify-content:center}
-.scen-note{margin-top:10px;font-size:14px;color:var(--ink-2);min-height:1.4em}
-.result-foot{margin-top:20px;padding-top:16px;border-top:1px solid var(--sep);font-size:13.5px;color:var(--ink-3);line-height:1.7}
+.scen-note{margin-top:10px;font-size:15px;color:var(--ink-2);min-height:1.4em;max-width:34em;margin-inline:auto;text-align:left}
+.result-foot{margin-top:20px;padding-top:16px;border-top:.5px solid var(--sep);font-size:13px;color:var(--ink-3);line-height:1.7;max-width:34em;margin-inline:auto;text-align:left}
 
 /* ---- 解释器（两个数字）---- */
 .explainer{display:grid;grid-template-columns:1fr 1fr;gap:0}
 @media(max-width:520px){.explainer{grid-template-columns:1fr}}
 .exp-num{padding:26px 24px;text-align:center}
-.exp-num+.exp-num{border-left:1px solid var(--sep)}
-@media(max-width:520px){.exp-num+.exp-num{border-left:none;border-top:1px solid var(--sep)}}
-.exp-num .k{font-size:14px;color:var(--ink-2);margin-bottom:6px}
-.exp-num .v{font-size:clamp(26px,5vw,34px);font-weight:700;letter-spacing:-.01em}
-.exp-note{padding:18px 24px 22px;font-size:14.5px;color:var(--ink-2);line-height:1.65;border-top:1px solid var(--sep)}
+.exp-num+.exp-num{border-left:.5px solid var(--sep)}
+@media(max-width:520px){.exp-num+.exp-num{border-left:none;border-top:.5px solid var(--sep)}}
+.exp-num .k{font-size:13px;color:var(--ink-2);margin-bottom:6px}
+.exp-num .v{font-size:clamp(24px,6vw,34px);font-weight:700;letter-spacing:-.01em;font-variant-numeric:tabular-nums}
+.exp-note{padding:16px 20px 20px;font-size:15px;color:var(--ink-2);line-height:1.65;border-top:.5px solid var(--sep);max-width:34em}
 
 /* ---- 概率磁贴 ---- */
-.oddsrow{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--sep);border-radius:var(--r-card);overflow:hidden}
+.oddsrow{display:grid;grid-template-columns:1fr 1fr}
+.odds+.odds{border-left:.5px solid var(--sep)}
+@media(max-width:520px){.oddsrow{grid-template-columns:1fr}.odds+.odds{border-left:none;border-top:.5px solid var(--sep)}}
 .odds{background:var(--surface);padding:22px 24px;text-align:center}
-.odds .k{font-size:14px;color:var(--ink-2)}
+.odds .k{font-size:13px;color:var(--ink-2)}
 .odds .v{font-size:28px;font-weight:700;margin-top:4px}
-.odds .m{font-size:12.5px;color:var(--ink-3);margin-top:3px}
+.odds .m{font-size:12px;color:var(--ink-3);margin-top:3px}
 
 /* ---- 对比卡 ---- */
 .cmpgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
 @media(max-width:600px){.cmpgrid{grid-template-columns:1fr}}
-.cmpcard{background:var(--surface);border-radius:var(--r-inner);box-shadow:var(--shadow);padding:18px 18px;cursor:pointer;
+.cmpcard{background:var(--surface);border-radius:var(--r-inner);box-shadow:var(--card-edge);padding:16px 16px;cursor:pointer;
   transition:transform var(--dur) var(--ease),box-shadow var(--dur) var(--ease);text-align:left;font:inherit;color:inherit;border:none;
   display:flex;flex-direction:column;gap:8px;position:relative}
-.cmpcard:hover{transform:translateY(-3px);box-shadow:0 4px 8px rgba(0,0,0,.06),0 16px 32px -12px rgba(0,0,0,.14)}
-.cmpcard.on{box-shadow:0 0 0 2px var(--accent), var(--shadow)}
-.cmpcard .tag{font-size:12.5px;font-weight:600;color:var(--ink-3);text-transform:none}
+.cmpcard:hover{transform:translateY(-2px);box-shadow:var(--card-edge),0 4px 8px rgba(0,0,0,.06),0 16px 32px -12px rgba(0,0,0,.14)}
+.cmpcard.on{box-shadow:0 0 0 2px var(--accent)}
+.cmpcard[disabled]{cursor:default;opacity:.45;pointer-events:none}
+.cmpcard .tag{font-size:13px;font-weight:600;color:var(--ink-3);text-transform:none}
 .cmpcard .date{font-size:15px;font-weight:600}
 .cmpcard .mid{font-size:20px;font-weight:700;color:var(--accent-ink)}
-.cmpcard .q{font-size:13px;color:var(--ink-2)}
-.cmpcard .cta{font-size:12.5px;color:var(--accent);opacity:0;transition:opacity var(--dur) var(--ease)}
+.cmpcard .q{font-size:13px;color:var(--ink-2);font-variant-numeric:tabular-nums}
+.cmpcard .cta{font-size:12px;color:var(--accent-ink);opacity:0;transition:opacity var(--dur) var(--ease)}
 .cmpcard:hover .cta,.cmpcard:focus-visible .cta{opacity:1}
 
 /* ---- 折叠区 ---- */
-details{margin-top:14px;background:var(--surface);border-radius:var(--r-card);box-shadow:var(--shadow)}
+details{margin-top:12px;background:var(--surface);border-radius:var(--r-card);box-shadow:var(--card-edge)}
 details+details{margin-top:14px}
-summary{cursor:pointer;padding:18px 24px;font-weight:600;font-size:15.5px;list-style:none;display:flex;
+summary{cursor:pointer;padding:16px 20px;font-weight:600;font-size:15px;list-style:none;display:flex;
   justify-content:space-between;align-items:center;border-radius:var(--r-card);transition:background var(--dur) var(--ease)}
-summary:hover{background:rgba(127,127,127,.06)}
+summary:hover{background:var(--fill-4)}
 summary::-webkit-details-marker{display:none}
 summary::after{content:"+";color:var(--ink-3);font-size:20px;font-weight:400;margin-left:12px;flex:none}
 details[open] summary::after{content:"–"}
 details[open] summary{border-radius:var(--r-card) var(--r-card) 0 0}
 .dbody{padding:2px 24px 26px}
-.dbody h4{margin:20px 0 6px;font-size:13.5px;font-weight:600;color:var(--ink-2)}
-.dbody h4:first-child{margin-top:4px}
-.dbody p,.dbody li{font-size:14.5px;color:var(--ink-2);margin:.5em 0;line-height:1.7}
+.dbody h3{margin:20px 0 6px;font-size:13px;font-weight:600;color:var(--ink-2)}
+.dbody h3:first-child{margin-top:4px}
+.dbody p,.dbody li{font-size:15px;color:var(--ink);margin:.5em 0;line-height:1.7;max-width:34em}
 .dbody code{font-family:ui-monospace,"SF Mono",monospace;font-size:13px;background:var(--surface-2);
   padding:2px 6px;border-radius:5px;color:var(--ink)}
 
 /* ---- 月度分布图（折叠区）---- */
 .chartnote{font-size:13px;color:var(--ink-3);margin:2px 0 12px}
 .scroll{overflow-x:auto;min-width:0;max-width:100%}
-.scroll svg{min-width:430px}
+#chart{min-width:430px}
 svg{display:block;width:100%;height:auto;overflow:visible}
-.legend{display:flex;gap:16px;font-size:12.5px;color:var(--ink-3);margin-top:8px}
+.legend{display:flex;gap:16px;font-size:12px;color:var(--ink-3);margin-top:8px}
 .legend span{display:inline-flex;align-items:center;gap:6px}
 .legend i{width:10px;height:10px;border-radius:3px;display:inline-block}
 
 /* ---- 微调滑块 ---- */
 .sliders{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:20px 28px;padding-top:6px}
 .sl{display:flex;flex-direction:column;gap:6px}
-.sl .top{display:flex;justify-content:space-between;align-items:baseline;font-size:13.5px;color:var(--ink-2)}
+.sl .top{display:flex;justify-content:space-between;align-items:baseline;font-size:13px;color:var(--ink-2)}
 .sl .top b{color:var(--ink);font-weight:600}
-input[type=range]{width:100%;accent-color:var(--accent);background:transparent}
-.chk{display:flex;align-items:flex-start;gap:10px;font-size:14.5px;color:var(--ink-2);margin-top:20px;line-height:1.6}
-.chk input{margin-top:4px;accent-color:var(--accent);width:17px;height:17px}
-.reset{font:inherit;font-size:13.5px;background:none;border:none;color:var(--ink-3);cursor:pointer;
-  text-decoration:underline;text-underline-offset:3px;padding:0;margin-top:16px}
-.reset:hover{color:var(--ink-2)}
+input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:20px;background:transparent;margin:0}
+input[type=range]::-webkit-slider-runnable-track{height:4px;border-radius:2px;background:var(--fill-3)}
+input[type=range]::-moz-range-track{height:4px;border-radius:2px;background:var(--fill-3)}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:20px;height:20px;border-radius:50%;
+  background:#fff;margin-top:-8px;box-shadow:0 0 0 .5px rgba(0,0,0,.12),0 1px 3px rgba(0,0,0,.2);
+  transition:transform 120ms var(--ease);cursor:pointer}
+input[type=range]::-moz-range-thumb{width:20px;height:20px;border:none;border-radius:50%;background:#fff;
+  box-shadow:0 0 0 .5px rgba(0,0,0,.12),0 1px 3px rgba(0,0,0,.2);cursor:pointer}
+input[type=range]:active::-webkit-slider-thumb{transform:scale(1.08)}
+input[type=range]:active::-moz-range-thumb{transform:scale(1.08)}
 
-footer{margin-top:56px;font-size:15px;color:var(--ink-2);line-height:1.75}
+.chk{display:flex;align-items:center;gap:12px;font-size:15px;color:var(--ink-2);margin-top:20px;line-height:1.6;cursor:pointer}
+.chk-text{order:1;flex:1}
+.chk input{position:absolute;opacity:0;width:1px;height:1px;margin:0}
+.switch{order:2;flex:none;width:51px;height:31px;border-radius:16px;background:var(--fill-2);position:relative;
+  transition:background var(--dur) var(--ease)}
+.switch::after{content:"";position:absolute;top:2px;left:2px;width:27px;height:27px;border-radius:50%;background:#fff;
+  box-shadow:0 1px 3px rgba(0,0,0,.25);transition:transform var(--dur) var(--ease)}
+.chk input:checked + .switch{background:var(--accent)}
+.chk input:checked + .switch::after{transform:translateX(20px)}
+.chk input:focus-visible + .switch{outline:2px solid var(--accent);outline-offset:2px}
+@media(prefers-reduced-motion:reduce){.switch,.switch::after{transition:none}}
+
+.reset{font:inherit;font-size:13px;font-weight:600;background:none;border:none;color:var(--accent-ink);cursor:pointer;
+  padding:6px 2px;margin-top:12px;border-radius:6px;transition:background var(--dur) var(--ease)}
+.reset:hover{background:var(--fill-4)}
+
+footer{margin-top:56px;font-size:15px;color:var(--ink-2);line-height:1.75;max-width:34em;margin-inline:auto}
 
 /* ---- 顶部粘性玻璃条 ---- */
 .stickybar{position:fixed;top:0;left:0;right:0;z-index:50;
   background:var(--glass);backdrop-filter:saturate(180%) blur(20px);-webkit-backdrop-filter:saturate(180%) blur(20px);
   box-shadow:inset 0 -1px 0 var(--sep);
-  padding:12px 20px;display:flex;justify-content:center;gap:10px;align-items:baseline;font-size:14.5px;
+  padding:12px 20px;display:flex;justify-content:center;gap:10px;align-items:baseline;font-size:15px;
   transform:translateY(-100%);transition:transform var(--dur) var(--ease);}
 .stickybar.show{transform:translateY(0)}
 .stickybar b{font-weight:700}
-.progress{position:fixed;top:0;left:0;height:2px;background:var(--accent);width:0;z-index:60;
-  transition:width .12s linear,opacity .2s linear;opacity:0}
-.progress.on{opacity:1}
-
-/* ---- 玻璃 tooltip（时间轴 / 图表）---- */
-.tooltip{position:absolute;pointer-events:none;background:var(--glass);backdrop-filter:saturate(180%) blur(20px);-webkit-backdrop-filter:saturate(180%) blur(20px);
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.5), var(--shadow);border-radius:10px;padding:7px 11px;font-size:12.5px;
-  color:var(--ink);opacity:0;transition:opacity .12s var(--ease);white-space:nowrap;z-index:10}
+/* ---- tooltip（时间轴 / 图表）---- */
+.tooltip{position:absolute;pointer-events:none;background:var(--surface);
+  box-shadow:var(--card-edge),0 4px 12px rgba(0,0,0,.14);border-radius:8px;padding:7px 11px;font-size:12px;
+  color:var(--ink);opacity:0;transition:opacity .12s var(--ease);white-space:nowrap;z-index:10;
+  transform:translateX(-50%)}
 .tooltip.show{opacity:1}
 
 /* ---- 入场动效 ---- */
@@ -204,7 +242,7 @@ footer{margin-top:56px;font-size:15px;color:var(--ink-2);line-height:1.75}
 }
 
 @media print{
-  .stickybar,.progress,.skip-link{display:none}
+  .stickybar,.skip-link{display:none}
   .reveal{opacity:1 !important;transform:none !important;transition:none !important}
   details{box-shadow:none;border:1px solid #ccc}
   details:not([open]) .dbody{display:block !important}
@@ -215,8 +253,7 @@ footer{margin-top:56px;font-size:15px;color:var(--ink-2);line-height:1.75}
 </style>
 </head>
 <body>
-<a href="#main" class="skip-link">跳到主要内容</a>
-<div class="progress" id="progress"></div>
+<a href="#main" class="skip-link" data-i18n="skip.text">跳到主要内容</a>
 <div class="stickybar" id="stickybar" aria-hidden="true">
   <span data-i18n="sticky.label">最可能</span> <b id="sticky-date">—</b> <span id="sticky-wait">—</span>
 </div>
@@ -227,6 +264,7 @@ footer{margin-top:56px;font-size:15px;color:var(--ink-2);line-height:1.75}
 <section id="s-input">
   <h1 data-i18n="hero.h1">你的技术移民签证，大概什么时候有结果？</h1>
   <p class="lede" data-i18n="hero.lede">填上你把居留申请交上去的日期，看看移民局大概什么时候会给结果。算法很简单：<b>你前面还排着多少人，移民局每个月能处理多少</b>。数据来自移民局公开的月度统计。</p>
+  <p class="grouptitle" data-i18n="group.input">你的申请</p>
   <div class="card pad">
     <div class="row">
       <label class="fld">
@@ -242,8 +280,9 @@ footer{margin-top:56px;font-size:15px;color:var(--ink-2);line-height:1.75}
   </div>
 </section>
 
-<section id="s-answer" class="reveal">
-  <div class="card answer" aria-live="polite" id="live">
+<section id="s-answer" class="reveal gap-lg">
+  <p class="grouptitle" data-i18n="group.answer">预计结果</p>
+  <div class="card answer" id="live">
     <div class="cap" data-i18n="answer.cap">最可能在这天有结果</div>
     <div class="big fadenum" id="p50">—</div>
     <div class="sub" id="wait">—</div>
@@ -251,12 +290,12 @@ footer{margin-top:56px;font-size:15px;color:var(--ink-2);line-height:1.75}
 
     <div class="timeline">
       <div class="scroll"><svg id="tl" class="tl-svg" viewBox="0 0 640 150" role="img" aria-labelledby="tldesc"></svg></div>
-      <p id="tldesc" class="sr-only" style="position:absolute;left:-9999px"></p>
+      <p id="tldesc" class="sr-only"></p>
       <div class="tl-caption"><span id="tl-lo">—</span><span id="tl-hi">—</span></div>
     </div>
 
     <div class="seg-wrap">
-      <div class="chips" role="group" aria-label="情景选择">
+      <div class="chips" role="group" aria-label="情景选择" data-i18n-attr="aria-label:scen.group">
         <button class="chip" id="sc-base"  aria-pressed="false" data-i18n="scen.base">一切顺利</button>
         <button class="chip" id="sc-mix"   aria-pressed="true"  data-i18n="scen.mix">最可能</button>
         <button class="chip" id="sc-shock" aria-pressed="false" data-i18n="scen.shock">政策收紧</button>
@@ -264,49 +303,36 @@ footer{margin-top:56px;font-size:15px;color:var(--ink-2);line-height:1.75}
     </div>
     <p class="scen-note" id="scen-note"></p>
 
+    <div id="banner-result" class="banner" hidden></div>
     <div class="result-foot" data-i18n="answer.foot">结果指移民局给出答复，包含批准和拒签。这个工具算的是<b>什么时候有答案</b>，不是<b>会不会过</b>。</div>
   </div>
+  <p class="sr-only" id="announce" aria-live="polite"></p>
 </section>
 
-<section id="s-explainer" class="reveal">
+<section id="s-explainer" class="reveal gap-lg">
+  <p class="grouptitle" data-i18n="group.why">这个数是怎么来的</p>
   <div class="card">
     <div class="explainer">
       <div class="exp-num"><div class="k" data-i18n="exp.queue">你前面还排着</div><div class="v" id="q">—</div></div>
       <div class="exp-num"><div class="k" data-i18n="exp.capacity">移民局每个月能处理</div><div class="v" id="mu-display">—</div></div>
     </div>
     <div class="exp-note" data-i18n="exp.note">↳ 这个工具做的事，就是把这两个数放在一起，再考虑一月放假、政策变动、处理速度的波动，模拟两万种可能的未来。</div>
+    <div class="oddsrow">
+      <div class="odds"><div class="k" data-i18n="odds.year">到今年底出结果的可能</div><div class="v" id="pr26">—</div><div class="m" id="pr26-m"></div></div>
+      <div class="odds"><div class="k" data-i18n="odds.mid">到明年年中出结果的可能</div><div class="v" id="pr27">—</div><div class="m" id="pr27-m"></div></div>
+    </div>
   </div>
 </section>
 
-<section id="s-odds" class="reveal">
-  <div class="oddsrow">
-    <div class="odds"><div class="k" data-i18n="odds.year">到今年底出结果的可能</div><div class="v" id="pr26">—</div><div class="m" id="pr26-m"></div></div>
-    <div class="odds"><div class="k" data-i18n="odds.mid">到明年年中出结果的可能</div><div class="v" id="pr27">—</div><div class="m" id="pr27-m"></div></div>
-  </div>
-</section>
-
-<section id="s-compare" class="reveal">
-  <h2 style="font-size:19px;margin:0 0 4px" data-i18n="cmp.title">早交晚交差多少</h2>
-  <p class="hint" style="margin:0 0 16px" data-i18n="cmp.sub">同一套情景假设下，提前或推迟一个月递交的差别。点卡片可以把日期换成它。</p>
+<section id="s-compare" class="reveal gap-lg">
+  <p class="grouptitle" data-i18n="group.compare">早交晚交差多少</p>
+  <p class="hint cmp-sub" data-i18n="cmp.sub">同一套情景假设下，提前或推迟一个月递交的差别。点卡片可以把日期换成它。</p>
   <div class="cmpgrid" id="cmpgrid"></div>
 </section>
 
-<section id="s-details" class="reveal">
-  <details id="adv-chart">
-    <summary data-i18n="d.chart.title">看每个月的具体概率</summary>
-    <div class="dbody">
-      <p class="chartnote" id="chartnote"></p>
-      <div class="scroll"><svg id="chart" viewBox="0 0 600 200" role="img" aria-labelledby="chartdesc"></svg></div>
-      <p id="chartdesc" class="sr-only" style="position:absolute;left:-9999px"></p>
-      <div class="legend">
-        <span><i style="background:var(--accent)"></i><span data-i18n="d.chart.legend1">80% 区间内</span></span>
-        <span><i style="background:var(--ink-3);opacity:.5"></i><span data-i18n="d.chart.legend2">区间外</span></span>
-      </div>
-    </div>
-  </details>
-
+<section id="s-details" class="reveal gap-lg">
   <details id="adv">
-    <summary data-i18n="d.adjust.title">微调假设</summary>
+    <summary><h2 data-i18n="d.adjust.title">微调假设</h2></summary>
     <div class="dbody">
       <div class="sliders">
         <div class="sl"><div class="top"><label for="s-p" data-i18n="d.adjust.p">政策收紧的可能性有多大</label><b id="v-p">35%</b></div>
@@ -318,30 +344,45 @@ footer{margin-top:56px;font-size:15px;color:var(--ink-2);line-height:1.75}
         <div class="sl"><div class="top"><label for="s-min" data-i18n="d.adjust.min">最快也要审这么久</label><b id="v-min">1 个月</b></div>
           <input type="range" id="s-min" min="1" max="4" step="1" value="1"></div>
       </div>
-      <label class="chk">
-        <input type="checkbox" id="cal">
-        <span><b data-i18n="d.adjust.cal.b">按历史偏差修正</b><span data-i18n="d.adjust.cal.tag">（结果会提前约 1 个月）</span><br>
+      <label class="chk" for="cal">
+        <span class="chk-text"><b data-i18n="d.adjust.cal.b">按历史偏差修正</b><span data-i18n="d.adjust.cal.tag">（结果会提前约 1 个月）</span><br>
         <span data-i18n="d.adjust.cal.note">↳ 过去的验证显示这个模型总是估得偏慢。勾上就按这个规律往前调。</span></span>
+        <input type="checkbox" id="cal" role="switch">
+        <span class="switch" aria-hidden="true"></span>
       </label>
       <p><button class="reset" id="reset" data-i18n="d.adjust.reset">恢复默认设定</button></p>
     </div>
   </details>
 
-  <details>
-    <summary data-i18n="d.how.title">这个日期是怎么算出来的</summary>
+  <p class="grouptitle" data-i18n="group.about">关于这个估算</p>
+  <details id="adv-chart">
+    <summary><h2 data-i18n="d.chart.title">看每个月的具体概率</h2></summary>
     <div class="dbody">
-      <h4 data-i18n="d.how.h1">基本思路</h4>
+      <p class="chartnote" id="chartnote"></p>
+      <div class="scroll"><svg id="chart" viewBox="0 0 600 200" role="img" aria-labelledby="chartdesc"></svg></div>
+      <p id="chartdesc" class="sr-only"></p>
+      <div class="legend">
+        <span><i style="background:var(--accent)"></i><span data-i18n="d.chart.legend1">80% 区间内</span></span>
+        <span><i style="background:var(--ink-3);opacity:.5"></i><span data-i18n="d.chart.legend2">区间外</span></span>
+      </div>
+    </div>
+  </details>
+
+  <details>
+    <summary><h2 data-i18n="d.how.title">这个日期是怎么算出来的</h2></summary>
+    <div class="dbody">
+      <h3 data-i18n="d.how.h1">基本思路</h3>
       <p data-i18n="d.how.p1">移民局公开数据只有月度汇总，没有逐笔记录。这里用的是排队论：<b>你前面还排着多少人，移民局每月能处理多少</b>。递交时排在你前面的人数 = 上月末在办量 + 当月受理量 × 你在当月的先后位置。之后模拟未来每个月的决定量，累计处理量首次超过你的排队位置的那个月，就是你拿到决定的月份。每次估算跑 20,000 条路径。</p>
-      <h4 data-i18n="d.how.h2">具体到「几月几日」是怎么来的</h4>
+      <h3 data-i18n="d.how.h2">具体到「几月几日」是怎么来的</h3>
       <p data-i18n="d.how.p2">模型的原生分辨率是<b>月</b>——公开数据只有月度汇总，没有更细的。日期是清队那个月内部按工作日插值出来的参考点，不是预约时间。把它当作 <b>±2 周</b> 的锚点来读；要做实际安排，请用「最慢」那一列。</p>
-      <h4 data-i18n="d.how.h3">产能怎么模拟</h4>
+      <h3 data-i18n="d.how.h3">产能怎么模拟</h3>
       <ul>
         <li data-i18n="d.how.l1">基础水平取近 3 个月的季节调整值。模型会模拟「连着好几个月慢下来」这种情况，不是假设每月速度各自独立。</li>
         <li data-i18n="d.how.l2"><b>季节性</b>：1 月新西兰放暑假，移民局处理量只有平时的四分之一；2 月还没完全恢复。</li>
         <li data-i18n="d.how.l3"><b>中断风险</b>：模型本身已经把「突然停摆」的风险算进去了，参照 2025 年 9–10 月那一次——这是<b>「一切顺利」情景就已经包含</b>的内生风险。</li>
         <li data-i18n="d.how.l4"><b>排队位置的不确定性</b>：因为有人中途撤回，移民局也可能不完全按先来后到处理。</li>
       </ul>
-      <h4 data-i18n="d.how.h4">三种情景的区别</h4>
+      <h3 data-i18n="d.how.h4">三种情景的区别</h3>
       <ul>
         <li data-i18n="d.how.l5"><b>一切顺利</b>：只含上面那个内生中断风险。</li>
         <li data-i18n="d.how.l6"><b>政策收紧</b>：额外假设 8 月新规确实拖慢了审理，强制中断若干个月，结束后按规律自然退出，可能拖长。</li>
@@ -352,19 +393,19 @@ footer{margin-top:56px;font-size:15px;color:var(--ink-2);line-height:1.75}
   </details>
 
   <details>
-    <summary data-i18n="d.limits.title">这个估算有哪些做不到的</summary>
+    <summary><h2 data-i18n="d.limits.title">这个估算有哪些做不到的</h2></summary>
     <div class="dbody">
-      <h4 data-i18n="d.limits.h1">模型仍然偏慢约 1 个月</h4>
+      <h3 data-i18n="d.limits.h1">模型仍然偏慢约 1 个月</h3>
       <p data-i18n="d.limits.p1">过去的验证显示，实际落点比预测偏早——原因可辨识：移民局产能有几次在 2–4 个月内近乎翻倍，任何只看历史数据的模型都预判不了这种跃升。所以真实落点更可能靠近区间的偏早一端。</p>
-      <h4 data-i18n="d.limits.h2">假设先进先出</h4>
+      <h3 data-i18n="d.limits.h2">假设先进先出</h3>
       <p data-i18n="d.limits.p2">移民局是否严格按递交顺序处理未知，也可能按 EOI 分数或案件复杂度调整顺序。排队位置的估算只部分覆盖了这个风险。</p>
-      <h4 data-i18n="d.limits.h3">「在办」里有不消耗产能的案子</h4>
+      <h3 data-i18n="d.limits.h3">「在办」里有不消耗产能的案子</h3>
       <p data-i18n="d.limits.p3">在办量包含等待补件、体检的滞留案。这些案子占着队列但不消耗当期处理产能，所以对材料齐全的申请人来说，真实排在前面的人可能少于账面值——这是一个方向明确的乐观因素。</p>
-      <h4 data-i18n="d.limits.h4" id="limits-scope-h">口径提醒</h4>
+      <h3 data-i18n="d.limits.h4" id="limits-scope-h">口径提醒</h3>
       <p data-i18n="d.limits.scope" id="limits-scope-p">消耗队列速度的数据只统计「技术移民」这一子类，但队列存量的数据统计口径更宽，包含商业类别在内。也就是说队列长度可能被系统性略微高估——这与「模型总是偏慢」的方向是一致的。</p>
-      <h4 data-i18n="d.limits.h5">递交日期越靠后，结果越依赖外推</h4>
+      <h3 data-i18n="d.limits.h5">递交日期越靠后，结果越依赖外推</h3>
       <p data-i18n="d.limits.p4" id="limits-extrap">数据截止日期之后的递交日期，模型需要自行推演积压的演变。这个外推在半年内还算可信，再往后就要当作「假设当前产能和受理量都保持不变」的条件结论来读。模型只算排队时间，不含审核本身的固有耗时——第三方 visatimes.nz 显示 SMC 中位处理时长约 50 个工作日（约 2.3 个月）。</p>
-      <h4 data-i18n="d.limits.h6">数据本身</h4>
+      <h3 data-i18n="d.limits.h6">数据本身</h3>
       <p id="limits-data" data-i18n-fmt="d.limits.p5">数据覆盖至 — ；新数据公布后需要重新估参。</p>
     </div>
   </details>
@@ -489,6 +530,14 @@ function applyI18n(){
     const s = t(key);
     if(s) el.innerHTML = s;
   });
+  document.querySelectorAll("[data-i18n-attr]").forEach(function(el){
+    el.getAttribute("data-i18n-attr").split(",").forEach(function(pair){
+      const parts = pair.split(":"), attr = parts[0], key = parts[1];
+      const s = t(key);
+      if(!s) return;
+      if(attr === "text") el.textContent = s; else el.setAttribute(attr, s);
+    });
+  });
 }
 function locale(){ return LANG === "en" ? "en-NZ" : "zh-CN"; }
 
@@ -506,11 +555,14 @@ function fmtDate(n){return dtfFull().format(toJsDate(n));}
 function fmtShort(n){return dtfShort().format(toJsDate(n)).replace(/\//g,"-");}
 function heroDate(n){
   const o=fromDN(n);
-  const yrPart = LANG==="en" ? String(o.y) : (o.y+" 年");
+  const yrDigits='<span class="num">'+o.y+'</span>';
+  const yrPart = LANG==="en" ? yrDigits : (yrDigits+" 年");
   const rest = new Intl.DateTimeFormat(locale(),{month:"long",day:"numeric"}).format(toJsDate(n));
-  return '<span class="yr">'+yrPart+'</span>'+rest;
+  const restNum = rest.replace(/[0-9]+/g, function(d){return '<span class="num">'+d+'</span>';});
+  return '<span class="yr">'+yrPart+'</span>'+restNum;
 }
 const pctFmt = v => new Intl.NumberFormat(locale(),{style:"percent",maximumFractionDigits:0}).format(v);
+function pctFmtClamp(v){ if(v>=0.995) return t("prob.gt99"); if(v<=0.005) return t("prob.lt1"); return pctFmt(v); }
 
 const WD={};
 function wdays(k){
@@ -689,11 +741,6 @@ function schedule(opts){
   schedule._fullT=setTimeout(function(){render(20000,opts.date||false);},120);
 }
 
-function setBusy(on){
-  $("progress").className="progress"+(on?" on":"");
-  if(on)$("progress").style.width="60%"; else $("progress").style.width="0";
-}
-
 function render(nPaths,dateChanged){
   const ds=DATASETS[CODE], ctx=ctxFor(CODE);
   CH.forEach(function(c){$(c[0]).setAttribute("aria-pressed",String(S.scen===c[1]));});
@@ -704,27 +751,31 @@ function render(nPaths,dateChanged){
   $("s-mu").setAttribute("aria-valuetext",t("unit.perMonth",{n:S.mu}));
   $("s-min").setAttribute("aria-valuetext",t("unit.months",{n:S.min}));
 
-  const pl=plan(ds,ctx,S.date), banIn=$("banner-input");
+  const pl=plan(ds,ctx,S.date), banIn=$("banner-input"), banRes=$("banner-result");
   banIn.hidden=true; banIn.className="banner";
+  banRes.hidden=true; banRes.innerHTML="";
   if(pl.err){
     banIn.hidden=false; banIn.textContent=pl.err;
+    clearResult();
     drawTimeline(null); drawChart(null,t("chart.err"));
     renderCompare(ds,ctx);
     updateStickyBar(null);
     return;
   }
-  setBusy(true);
   if(pl.mode==="done"){
-    setBusy(false);
     banIn.hidden=false; banIn.className="banner ok";
     banIn.textContent=t("done.banner",{n:Math.round(pl.queue),date:fmtDate(pl.clearedDay)});
     setHero(pl.clearedDay);
-    $("wait").textContent=t("done.wait",{n:monthsToText(pl.clearedDay-pl.subDay)});
+    const doneWait=t("done.wait",{n:monthsToText(pl.clearedDay-pl.subDay)});
+    $("wait").textContent=doneWait;
     $("conservative-note").hidden=true;
     $("q").textContent=Math.round(pl.queue);
     $("mu-display").textContent=t("unit.perMonth",{n:S.mu});
-    $("pr26").textContent="—";$("pr27").textContent="—";
+    $("pr26").textContent="—";$("pr26-m").textContent="";
+    $("pr27").textContent="—";$("pr27-m").textContent="";
     $("scen-note").textContent="";
+    $("tl-lo").textContent="—";$("tl-hi").textContent="—";
+    announceResult(pl.clearedDay,doneWait);
     drawTimeline(null); drawChart(null,t("chart.done"));
     renderCompare(ds,ctx);
     updateStickyBar(null);
@@ -738,16 +789,17 @@ function render(nPaths,dateChanged){
         p90=qt(s,S.cal?calFwd(ds,0.90):0.90);
   setHero(p50);
   const days=p50>=BIG?null:p50-pl.subDay;
-  $("wait").textContent=days===null?t("wait.outOfRange"):t("wait.text",{n:monthsToText(days)})+(S.cal?t("wait.calSuffix"):"");
+  const waitTxt=days===null?t("wait.outOfRange"):t("wait.text",{n:monthsToText(days)})+(S.cal?t("wait.calSuffix"):"");
+  $("wait").textContent=waitTxt;
   if(pl.mode==="future"){
-    $("q").textContent="~"+estQueue(ds,ctx,scenP(),S.dur,S.mu,pl);
+    $("q").textContent=t("approx.prefix")+estQueue(ds,ctx,scenP(),S.dur,S.mu,pl);
   }else{
     $("q").textContent=Math.round(pl.queue);
   }
   $("mu-display").textContent=t("unit.perMonth",{n:S.mu});
   let pr26raw=pByDay(s,END_YEAR), pr27raw=pByDay(s,END_MID);
   const pr26=S.cal?calInv(ds,pr26raw):pr26raw, pr27=S.cal?calInv(ds,pr27raw):pr27raw;
-  $("pr26").textContent=pctFmt(pr26); $("pr27").textContent=pctFmt(pr27);
+  $("pr26").textContent=pctFmtClamp(pr26); $("pr27").textContent=pctFmtClamp(pr27);
   $("pr26-m").textContent=t("odds.by",{date:fmtShort(END_YEAR)});
   $("pr27-m").textContent=t("odds.by",{date:fmtShort(END_MID)});
 
@@ -756,7 +808,10 @@ function render(nPaths,dateChanged){
   const wm=days===null?99:days/30.44;
   if(pl.mode==="future"&&pl.joinKey>ctx.LASTK+6)msgs.push(t("note.extrapolate"));
   if(pl.mode==="future"&&wm<=S.min+1)msgs.push(t("note.floor"));
-  if(msgs.length){banIn.hidden=false;banIn.textContent=msgs.join(" ");}
+  if(msgs.length){
+    banRes.hidden=false;
+    banRes.innerHTML=msgs.map(function(m){return "<p>"+m+"</p>";}).join("");
+  }
   $("scen-note").textContent=t("scen.note."+S.scen);
 
   drawTimeline({s:s,p10:p10,p25:p25,p50:p50,p75:p75,p90:p90,subDay:pl.subDay});
@@ -764,8 +819,25 @@ function render(nPaths,dateChanged){
   $("tl-hi").textContent=t("tl.slowest",{date:dstr(p90)});
   drawChart({s:s,p10:p10,p50:p50,p90:p90,START:ctx.START});
   updateStickyBar({p50:p50,days:days});
+  announceResult(p50,waitTxt);
   if(dateChanged||renderCompare._pendingScen){renderCompare(ds,ctx);renderCompare._pendingScen=false;}
-  setBusy(false);
+}
+
+function clearResult(){
+  $("p50").textContent="—";
+  $("wait").textContent="—";
+  $("conservative-note").hidden=true;
+  $("q").textContent="—";
+  $("mu-display").textContent="—";
+  $("pr26").textContent="—";$("pr26-m").textContent="";
+  $("pr27").textContent="—";$("pr27-m").textContent="";
+  $("scen-note").textContent="";
+  $("tl-lo").textContent="—";$("tl-hi").textContent="—";
+  $("announce").textContent="";
+}
+function announceResult(dateVal,waitTxt){
+  const dateTxt=dateVal>=BIG?t("far.future"):fmtDate(dateVal);
+  $("announce").textContent=t("answer.cap")+" "+dateTxt+"。"+waitTxt;
 }
 
 function setHero(v){
@@ -800,16 +872,20 @@ function renderCompare(ds,ctx){
         const s=sortAsc(simulate(ds,ctx,opts(ctx,pl,6000)));
         const p50=qt(s,S.cal?calFwd(ds,0.50):0.50);
         mid=dstr(p50);
-        qtxt=(pl.mode==="future"?"~"+estQueue(ds,ctx,scenP(),S.dur,S.mu,pl):Math.round(pl.queue))+t("cmp.unit");
+        qtxt=(pl.mode==="future"?t("approx.prefix")+estQueue(ds,ctx,scenP(),S.dur,S.mu,pl):Math.round(pl.queue))+t("cmp.unit");
       }
     }
     card.innerHTML='<div class="tag">'+t(tags[i])+'</div>'+
       '<div class="date">'+fmtShort(DN(+dateStr.split("-")[0],+dateStr.split("-")[1],+dateStr.split("-")[2]))+'</div>'+
       '<div class="mid">'+mid+'</div><div class="q">'+t("cmp.queue",{q:qtxt})+'</div>'+
-      '<div class="cta">'+t("cmp.cta")+'</div>';
-    card.addEventListener("click",function(){
-      S.date=dateStr; $("d").value=dateStr; schedule({date:true});
-    });
+      '<div class="cta">'+(pl.err?"":t("cmp.cta"))+'</div>';
+    if(pl.err){
+      card.disabled=true; card.setAttribute("aria-disabled","true");
+    }else{
+      card.addEventListener("click",function(){
+        S.date=dateStr; $("d").value=dateStr; schedule({date:true});
+      });
+    }
     grid.appendChild(card);
   });
 }
@@ -819,7 +895,10 @@ renderCompare._pendingScen=false;
 const NS="http://www.w3.org/2000/svg";
 function svgEl(tag,attrs){const e=document.createElementNS(NS,tag);for(const k in attrs)e.setAttribute(k,attrs[k]);return e;}
 function drawTimeline(d){
-  const svg=$("tl"),W=640,H=150;
+  const svg=$("tl"),H=150;
+  const measured=Math.round(svg.parentElement.getBoundingClientRect().width);
+  const W=measured>0?measured:640;
+  svg.setAttribute("viewBox","0 0 "+W+" "+H);
   while(svg.firstChild)svg.removeChild(svg.firstChild);
   if(!d)return;
   const ctx=ctxFor(CODE);
@@ -830,20 +909,21 @@ function drawTimeline(d){
   lo=Math.min(lo,todayM-1); hi=Math.max(hi,mi(d.subDay));
   const L=10,R=10,T=26,B=34,axisY=H-B,iw=W-L-R;
   const x=function(mv){return L+(mv-lo)/(hi-lo)*iw;};
+  const step=W<380?3:(W<520?2:1);
   svg.appendChild(svgEl("line",{x1:L,y1:axisY,x2:W-R,y2:axisY,stroke:"var(--sep)","stroke-width":1}));
-  // 年份分隔与月份刻度
+  // 年份分隔与月份刻度（窄屏降低标签密度，而不是把画布撑宽出容器）
   let prevYear=null;
   for(let v=lo;v<=hi;v++){
     const key=ctx.START+v, y=KY(key), m=KM(key);
     const xx=x(v);
     if(y!==prevYear){
       svg.appendChild(svgEl("line",{x1:xx,y1:T-6,x2:xx,y2:axisY+6,stroke:"var(--sep)","stroke-width":1}));
-      const yl=svgEl("text",{x:xx+4,y:T-10,"font-size":10.5,fill:"var(--ink-3)","font-weight":600});
+      const yl=svgEl("text",{x:xx+4,y:T-10,"font-size":11,fill:"var(--ink-3)","font-weight":600});
       yl.textContent=y; svg.appendChild(yl);
       prevYear=y;
     }
-    if(m%2===1||hi-lo<=8){
-      const lab=svgEl("text",{x:xx,y:axisY+18,"text-anchor":"middle","font-size":10,fill:"var(--ink-3)"});
+    if((v-lo)%step===0||hi-lo<=6){
+      const lab=svgEl("text",{x:xx,y:axisY+18,"text-anchor":"middle","font-size":11,fill:"var(--ink-3)"});
       lab.textContent=dtfMonthShort().format(new Date(Date.UTC(y,m-1,1)));
       svg.appendChild(lab);
     }
@@ -868,7 +948,7 @@ function drawTimeline(d){
   if(todayM>=lo-1&&todayM<=hi+1){
     const xt=x(todayM);
     svg.appendChild(svgEl("line",{x1:xt,y1:T-14,x2:xt,y2:axisY,stroke:"var(--ink-3)","stroke-width":1,"stroke-dasharray":"3,3"}));
-    const tl=svgEl("text",{x:xt,y:T-16,"text-anchor":"middle","font-size":9.5,fill:"var(--ink-3)"});
+    const tl=svgEl("text",{x:xt,y:T-16,"text-anchor":"middle","font-size":11,fill:"var(--ink-3)"});
     tl.textContent=t("tl.today"); svg.appendChild(tl);
   }
   // 递交点标记
@@ -892,9 +972,8 @@ function drawTimeline(d){
     const mv=Math.round(lo+((cx*scale)-L)/iw*(hi-lo));
     const dn=DN(KY(ctx.START+mv),KM(ctx.START+mv),daysIn(KY(ctx.START+mv),KM(ctx.START+mv)));
     const p=pByDay(d.s,dn), pc=S.cal?calInv(DATASETS[CODE],p):p;
-    tip.textContent=t("tl.tooltip",{date:fmtShort(dn),pct:pctFmt(pc)});
-    tip.style.left=(evt.touches?evt.touches[0].clientX:evt.clientX)+"px";
-    tip.style.top=(rect.top+window.scrollY-38)+"px";
+    tip.textContent=t("tl.tooltip",{date:fmtShort(dn),pct:pctFmtClamp(pc)});
+    positionTooltip(tip,evt.touches?evt.touches[0].clientX:evt.clientX,rect.top);
     tip.classList.add("show");
   }
   hitRect.addEventListener("mousemove",onMove);
@@ -903,6 +982,12 @@ function drawTimeline(d){
   hitRect.addEventListener("touchmove",onMove,{passive:true});
   hitRect.addEventListener("touchend",function(){tip.classList.remove("show");});
   $("tldesc").textContent=t("tl.desc",{p50:fmtShort(d.p50),p10:fmtShort(d.p10),p90:dstr(d.p90)});
+}
+function positionTooltip(tip,clientX,rectTop){
+  const margin=8, docX=clientX+window.scrollX;
+  const minX=window.scrollX+margin, maxX=window.scrollX+window.innerWidth-margin;
+  tip.style.left=Math.min(Math.max(docX,minX),maxX)+"px";
+  tip.style.top=(rectTop+window.scrollY-38)+"px";
 }
 let tooltipEl=null;
 function ensureTooltip(){
@@ -946,18 +1031,18 @@ function drawChart(d,msg){
     rect.style.cursor="pointer";
     rect.addEventListener("mousemove",function(evt){
       const rct=svg.getBoundingClientRect();
-      tip.textContent=t("chart.tooltip",{month:KSTR(d.START+v),pct:pctFmt(vals[i])});
-      tip.style.left=evt.clientX+"px"; tip.style.top=(rct.top+window.scrollY-38)+"px";
+      tip.textContent=t("chart.tooltip",{month:KSTR(d.START+v),pct:pctFmtClamp(vals[i])});
+      positionTooltip(tip,evt.clientX,rct.top);
       tip.classList.add("show");
     });
     rect.addEventListener("mouseleave",function(){tip.classList.remove("show");});
     svg.appendChild(rect);
     if(vals[i]>=0.05){
-      const lab=svgEl("text",{x:x0+w/2,y:T+ih-h-5,"text-anchor":"middle","font-size":9.5,
+      const lab=svgEl("text",{x:x0+w/2,y:T+ih-h-5,"text-anchor":"middle","font-size":11,
         fill:isMed?"var(--accent-ink)":"var(--ink-3)","font-weight":isMed?700:400});
       lab.textContent=Math.round(vals[i]*100)+"%"; svg.appendChild(lab);
     }
-    const monthLab=svgEl("text",{x:x0+w/2,y:T+ih+15,"text-anchor":"middle","font-size":9.5,
+    const monthLab=svgEl("text",{x:x0+w/2,y:T+ih+15,"text-anchor":"middle","font-size":11,
       fill:isMed?"var(--ink)":"var(--ink-3)","font-weight":isMed?700:400});
     const key=d.START+v;
     monthLab.textContent = (KM(key)===1||v===keys[0]) ? (KY(key)+" "+dtfMonthShort().format(new Date(Date.UTC(KY(key),KM(key)-1,1))))
@@ -1013,7 +1098,7 @@ function bindEvents(){
 window.SMC_DEBUG={
   _internal:{DATASETS:DATASETS,calFwd:calFwd,calInv:calInv,qt:qt,ctxFor:ctxFor,plan:plan,simulate:simulate,sortAsc:sortAsc,opts:opts},
   setCountry:function(code){CODE=code;schedule({date:true});},
-  setLang:function(l){LANG=l;try{localStorage.setItem("smc-lang",LANG);}catch(e){}applyI18n();schedule({date:true});},
+  setLang:function(l){LANG=l;try{localStorage.setItem("smc-lang",LANG);}catch(e){}applyI18n();updateDataLabels();schedule({date:true});},
   compute:function(dateStr,scen,cal,nPaths,seedOverride){
     const ds=DATASETS[CODE], ctx=ctxFor(CODE);
     const savedScen=S.scen, savedCal=S.cal;
@@ -1038,6 +1123,13 @@ window.SMC_DEBUG={
   }
 };
 
+function updateDataLabels(){
+  const ds=DATASETS[CODE];
+  const updatedLabel=dtfMonth().format(new Date(Date.UTC(+ds.meta.updatedTo.split("-")[0],+ds.meta.updatedTo.split("-")[1]-1,1)));
+  $("notice-updated").textContent=t("notice.updated",{date:updatedLabel});
+  $("limits-data").textContent=t("d.limits.p5",{updated:updatedLabel});
+}
+
 function init(){
   Object.assign(STR.zh,I18N_ZH);
   applyI18n();
@@ -1052,9 +1144,7 @@ function init(){
   try{const sv=localStorage.getItem("smc-date");if(sv)initDate=sv;}catch(e){}
   if(initDate<minDate)initDate=minDate; if(initDate>maxDate)initDate=maxDate;
   S.date=initDate; $("d").value=initDate;
-  const updatedLabel=dtfMonth().format(new Date(Date.UTC(+ds.meta.updatedTo.split("-")[0],+ds.meta.updatedTo.split("-")[1]-1,1)));
-  $("notice-updated").textContent=t("notice.updated",{date:updatedLabel});
-  $("limits-data").textContent=t("d.limits.p5",{updated:updatedLabel});
+  updateDataLabels();
   bindEvents();
   setupReveal();
   setupSticky();
@@ -1062,6 +1152,13 @@ function init(){
 }
 
 const I18N_ZH={
+  "meta.title":"技术移民签证什么时候有结果 · 估算工具",
+  "meta.description":"填上你把居留申请交上去的日期，看看新西兰移民局大概什么时候会给结果——基于移民局公开月度统计的排队论估算工具。",
+  "skip.text":"跳到主要内容",
+  "group.input":"你的申请","group.answer":"预计结果","group.why":"这个数是怎么来的",
+  "group.compare":"早交晚交差多少","group.about":"关于这个估算",
+  "scen.group":"情景选择",
+  "prob.gt99":">99%","prob.lt1":"<1%","approx.prefix":"约",
   "sticky.label":"最可能",
   "sticky.wait":"还要等约 {n} 个月",
   "hero.h1":"你的技术移民签证，大概什么时候有结果？",
@@ -1081,7 +1178,7 @@ const I18N_ZH={
   "exp.note":"↳ 这个工具做的事，就是把这两个数放在一起，再考虑一月放假、政策变动、处理速度的波动，模拟两万种可能的未来。",
   "odds.year":"到今年底出结果的可能","odds.mid":"到明年年中出结果的可能",
   "odds.by":"截至 {date}",
-  "cmp.title":"早交晚交差多少","cmp.sub":"同一套情景假设下，提前或推迟一个月递交的差别。点卡片可以把日期换成它。",
+  "cmp.sub":"同一套情景假设下，提前或推迟一个月递交的差别。点卡片可以把日期换成它。早于数据截止的用实际统计，之后的标「约」，是模拟推算。",
   "cmp.earlier":"早交一个月","cmp.selected":"你选的日期","cmp.later":"晚交一个月",
   "cmp.queue":"前面排着 {q}","cmp.unit":" 份","cmp.done":"已出结果","cmp.cta":"换成这个日期 →",
   "d.chart.title":"看每个月的具体概率","d.chart.legend1":"80% 区间内","d.chart.legend2":"区间外",
