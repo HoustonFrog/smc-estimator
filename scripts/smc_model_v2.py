@@ -17,9 +17,30 @@ BLOCK=2
 DRIFT_CAP=0
 
 # ---------- 季节因子 ----------
+# 12 月不打折：去趋势后三年的比值是 1.80/0.91/1.66，移民局赶在圣诞停摆前突击结案，
+# 盖过了月末丢掉的那几天。真正的塌陷全在 1 月，由 0.25 承担。
 SEAS={1:0.25, 2:0.85}
 def s_of(per): return SEAS.get(per.month,1.0)
 def sadj(s):  return s/ pd.Series([s_of(p) for p in s.index],index=s.index)
+
+# ---------- 政策生效日造成的月内非匀速到达 ----------
+# 默认假设当月受理量在月内匀速流入。政策生效日卡在月中时这个假设不成立：
+# 2026-08-24 SMC 新政放开（新增 Skilled Work Experience / Trades and Technician 两条通道），
+# 当月 1041 件受理里约 831 件是新政后涌入的，且集中在开闸头两天。
+# day=生效日, baseline=若无新政的正常受理量, spread=超额部分集中到达的天数。
+# 只有一个数据集时放全局；将来加第二个国家要改成按国家分开。
+POLICY={"2026-08": dict(day=24, baseline=210, spread=2)}
+
+def acc_arrived(per, frac):
+    """截至当月进度 frac(0~1) 时已经进入队列的当月受理量。无政策事件时退化为 frac*ACC。"""
+    total=float(ACC[per]); ev=POLICY.get(str(per))
+    if not ev: return frac*total
+    dim=per.days_in_month; surge=total-ev['baseline']
+    f0=(ev['day']-1)/dim; f1=min((ev['day']-1+ev['spread'])/dim,1.0)
+    if   frac<=f0: s=0.0
+    elif frac>=f1: s=surge
+    else:          s=surge*(frac-f0)/(f1-f0)
+    return ev['baseline']*frac+s
 
 # ---------- 产能与中断状态估计（只用截至 origin 的数据） ----------
 def estimate(origin, look=6):
@@ -121,7 +142,7 @@ def backtest(look=6,qsd=60,n=40000):
     for sub in pd.period_range('2024-06','2026-01',freq='M'):
         prev=sub-1
         if prev not in OH.index or sub not in ACC.index: continue
-        q_at_sub = OH[prev] + 0.5*ACC[sub]
+        q_at_sub = OH[prev] + acc_arrived(sub, 0.5)
         if sub not in DEC.index: continue
         q_rem = q_at_sub - DEC[sub]          # 提交当月实际决定量已知(与本次预测口径一致)
         if q_rem<=0: continue
@@ -145,7 +166,7 @@ def backtest(look=6,qsd=60,n=40000):
 def pitvals(n=40000):
     o=[]
     for sub in pd.period_range('2024-06','2026-01',freq='M'):
-        q=OH[sub-1]+0.5*ACC[sub]-DEC[sub]
+        q=OH[sub-1]+acc_arrived(sub,0.5)-DEC[sub]
         if q<=0: continue
         p=estimate(sub,look=3); m,h,_=simulate(p,q,QSD,str(sub+1),n=n,seed=7)
         cs=DEC.loc[sub+1:].cumsum()
@@ -173,7 +194,7 @@ if __name__=="__main__":
     # 数据截止月的月初/月中/月底三个代表性递交点：有效排队 = 上月末在办 + frac×本月受理，再扣除本月已发生的决定量
     monthlabel=str(ORI)
     for lab,frac in [(monthlabel+' 月初',0.0),(monthlabel+' 月中旬',0.5),(monthlabel+' 月底',1.0)]:
-        qe=OH[ORI-1]+frac*ACC[ORI]-DEC[ORI]
+        qe=OH[ORI-1]+acc_arrived(ORI,frac)-DEC[ORI]
         mb,hb,pathb=simulate(par,qe,QSD,START,n=N,seed=11)
         ms,hs,_=simulate(par,qe,QSD,START,n=N,force=SHOCK,seed=12)
         rng=np.random.default_rng(99); hm=np.where(rng.random(N)<P_SHOCK,hs,hb)

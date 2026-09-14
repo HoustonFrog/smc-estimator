@@ -86,6 +86,10 @@ def build_dataset(country_dir: Path):
             "n": int(len(pv)),
             "map": {f"{k:.2f}": round(v, 3) for k, v in cal_map.items()},
         },
+        # 政策生效日的月内到达拆分，唯一定义在 smc_model_v2.POLICY，这里只是搬运，
+        # 保证 HTML 工具和模型脚本算出来的排队位置一致。加第二个国家时要改成按国家分开。
+        "policy": {k: {"day": v["day"], "baseline": v["baseline"], "spreadDays": v["spread"]}
+                   for k, v in smc.POLICY.items()},
         "shock": SHOCK_DEFAULTS.get(code, {"fromMonth": months[-1], "defaultP": 0.35, "defaultDur": 2}),
     }
     return code, ds

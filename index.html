@@ -339,8 +339,8 @@ footer{margin-top:56px;font-size:15px;color:var(--ink-2);line-height:1.75;max-wi
           <input type="range" id="s-p" min="0" max="100" step="5" value="35"></div>
         <div class="sl"><div class="top"><label for="s-dur" data-i18n="d.adjust.dur">一旦收紧会停滞几个月</label><b id="v-dur">2 个月</b></div>
           <input type="range" id="s-dur" min="1" max="6" step="1" value="2"></div>
-        <div class="sl"><div class="top"><label for="s-mu" data-i18n="d.adjust.mu">移民局每月能处理多少份</label><b id="v-mu">271 份/月</b></div>
-          <input type="range" id="s-mu" min="120" max="380" step="1" value="271"></div>
+        <div class="sl"><div class="top"><label for="s-mu" data-i18n="d.adjust.mu">移民局每月能处理多少份</label><b id="v-mu">239 份/月</b></div>
+          <input type="range" id="s-mu" min="120" max="380" step="1" value="239"></div>
         <div class="sl"><div class="top"><label for="s-min" data-i18n="d.adjust.min">最快也要审这么久</label><b id="v-min">1 个月</b></div>
           <input type="range" id="s-min" min="1" max="4" step="1" value="1"></div>
       </div>
@@ -431,7 +431,7 @@ const DATASETS = {
         zh: "中国",
         en: "China"
       },
-      updatedTo: "2026-07",
+      updatedTo: "2026-08",
       firstMonth: "2023-11"
     },
     series: {
@@ -468,18 +468,19 @@ const DATASETS = {
         "2026-04",
         "2026-05",
         "2026-06",
-        "2026-07"
+        "2026-07",
+        "2026-08"
       ],
-      dec: [6,27,9,21,18,48,12,21,51,84,30,78,33,30,21,159,171,147,219,111,105,90,24,42,105,174,18,198,249,204,294,351,168],
-      acc: [45,27,30,60,27,51,42,45,30,57,132,24,81,99,93,120,132,111,132,114,135,219,168,168,165,171,156,177,189,219,219,192,210],
-      oh: [99,102,120,156,165,165,192,216,195,168,261,210,255,330,396,357,318,288,186,192,216,348,348,624,669,672,813,792,789,723,720,510,552]
+      dec: [6,27,9,21,18,48,12,21,51,84,30,78,33,30,21,159,171,147,219,111,105,90,24,42,105,174,18,198,249,204,294,351,159,207],
+      acc: [45,27,30,60,27,51,42,45,30,57,132,24,81,99,93,120,132,111,132,114,135,219,168,168,165,171,156,177,189,219,219,192,210,1041],
+      oh: [99,102,120,156,165,165,192,216,195,168,261,210,255,330,396,357,318,288,186,192,216,348,348,624,669,672,813,792,789,723,720,510,552,1176]
     },
     params: {
-      mu: 271.0,
-      sd_mu: 54.06,
-      pool: [1.2488,0.9814,0.8436,1.4621,0.9814,0.4061,1.1206,1.049,0.804,1.1587,1.3834,0.5608],
-      accPool: [219,168,168,165,171,156,177,189,219,219,192,210],
-      p_enter: 0.0323,
+      mu: 239.0,
+      sd_mu: 57.69,
+      pool: [1.1758,0.924,0.7943,1.3765,0.924,0.924,1.5312,0.3823,1.0551,0.9877,0.757,1.091,1.5668,0.5865,0.924],
+      accPool: [168,168,165,171,156,177,189,219,219,192,210,1041],
+      p_enter: 0.0312,
       p_exit: 0.5,
       lo: 0.2875,
       seas: {
@@ -497,6 +498,13 @@ const DATASETS = {
         "0.50": 0.273,
         "0.75": 0.527,
         "0.90": 0.816
+      }
+    },
+    policy: {
+      "2026-08": {
+        day: 24,
+        baseline: 210,
+        spreadDays: 2
       }
     },
     shock: {
@@ -565,10 +573,17 @@ const pctFmt = v => new Intl.NumberFormat(locale(),{style:"percent",maximumFract
 function pctFmtClamp(v){ if(v>=0.995) return t("prob.gt99"); if(v<=0.005) return t("prob.lt1"); return pctFmt(v); }
 
 const WD={};
+/* 移民局圣诞—新年停摆：12/25–12/31 与 1/1–1/2 不计作工作日。
+   其余公众假期（复活节、Matariki 等）是单日且日期逐年变动，相对本工具 ±2 周的日期分辨率不值得建表。
+   注意这只影响"月内第几天"的插值，不改变当月总量——12 月总量本身并不低（见 smc_model_v2.py 的季节因子注释）。*/
+function isShutdown(m,d){return (m===12&&d>=25)||(m===1&&d<=2);}
 function wdays(k){
   if(WD[k])return WD[k];
   const y=KY(k),m=KM(k),dim=daysIn(y,m),a=[];
-  for(let d=1;d<=dim;d++){const w=new Date(Date.UTC(y,m-1,d)).getUTCDay();if(w>=1&&w<=5)a.push(d);}
+  for(let d=1;d<=dim;d++){
+    const w=new Date(Date.UTC(y,m-1,d)).getUTCDay();
+    if(w>=1&&w<=5&&!isShutdown(m,d))a.push(d);
+  }
   return WD[k]=a;
 }
 function dayAt(key,f){
@@ -676,13 +691,24 @@ function calInv(ds,p){ // p = 原始概率(pByDay 的结果) → 校正后的概
 }
 
 /* ---------- 排队位置 ---------- */
+/* 截至当月进度 frac 时已进入队列的当月受理量。
+   默认匀速；政策生效日卡在月中时按 ds.policy 拆成"正常量匀速 + 超额集中到达"两段。 */
+function accArrived(ds,k,frac,acc){
+  const ev=ds.policy&&ds.policy[KSTR(k)];
+  if(!ev)return frac*acc;
+  const dim=daysIn(KY(k),KM(k)),surge=acc-ev.baseline;
+  const f0=(ev.day-1)/dim,f1=Math.min((ev.day-1+ev.spreadDays)/dim,1);
+  let s;
+  if(frac<=f0)s=0; else if(frac>=f1)s=surge; else s=surge*(frac-f0)/(f1-f0);
+  return ev.baseline*frac+s;
+}
 function plan(ds,ctx,dateStr){
   const p=dateStr.split("-"),y=+p[0],m=+p[1],d=+p[2];
   const sm=MK(y,m),frac=(d-1)/daysIn(y,m),subDay=DN(y,m,d);
   if(sm<=ctx.LASTK){
     const prev=ctx.HIST[sm-1],cur=ctx.HIST[sm];
     if(!prev||!cur)return{err:t("err.tooEarly",{min:fmtMonthBoundary(ctx.firstK+1)})};
-    const queue=prev.oh+frac*cur.acc;
+    const queue=prev.oh+accArrived(ds,sm,frac,cur.acc);
     let cum=0;
     for(let k=sm;k<=ctx.LASTK;k++){
       const before=cum;cum+=ctx.HIST[k].dec;
@@ -722,7 +748,7 @@ function estQueue(ds,ctx,scenP,scenDur,mu,pl){
 const $=function(id){return document.getElementById(id);};
 let CODE="CN";
 let END_YEAR, END_MID; // 从「今天」推导，与数据集无关，跟 CODE 切换无关
-const S={date:"",scen:"mix",p:35,dur:2,mu:271,min:1,cal:false};
+const S={date:"",scen:"mix",p:35,dur:2,mu:239,min:1,cal:false};
 const CH=[["sc-base","base"],["sc-mix","mix"],["sc-shock","shock"]];
 function scenP(){return S.scen==="base"?0:S.scen==="shock"?1:S.p/100;}
 function dstr(v){return v>=BIG?t("far.future"):fmtDate(v);}
@@ -1088,8 +1114,8 @@ function bindEvents(){
   });
   $("cal").addEventListener("change",function(e){S.cal=e.target.checked;schedule({date:true});});
   $("reset").addEventListener("click",function(){
-    S.scen="mix";S.p=35;S.dur=2;S.mu=271;S.min=1;S.cal=false;
-    $("s-p").value=35;$("s-dur").value=2;$("s-mu").value=271;$("s-min").value=1;$("cal").checked=false;
+    S.scen="mix";S.p=35;S.dur=2;S.mu=239;S.min=1;S.cal=false;
+    $("s-p").value=35;$("s-dur").value=2;$("s-mu").value=239;$("s-min").value=1;$("cal").checked=false;
     renderCompare._pendingScen=true; schedule({date:true});
   });
 }
