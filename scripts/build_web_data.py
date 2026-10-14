@@ -17,6 +17,7 @@ from pathlib import Path
 from typing import Optional
 
 import numpy as np
+import pandas as pd
 import smc_model_v2 as smc
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -45,10 +46,21 @@ def build_dataset(country_dir: Path):
     code = country_dir.name
     raw = str(country_dir) + "/"
     dec, acc, oh = smc.load(raw)
+    # 历史图显示批准/拒绝细分，读取与 load() 相同优先级的 R1，保持原始计数。
+    r1_path = next(country_dir / name for name in (
+        "R1_Residence_Decisions_by_Application_Substream_and_Decision_Type.csv",
+        "R1_Residence_Decisions_by_Decision_Type_and_Application_Substream.csv",
+    ) if (country_dir / name).exists())
+    r1 = pd.read_csv(r1_path)
+    r1 = r1[r1["Application Substream"] == "SMC Skilled Residence"].copy()
+    r1["month"] = pd.to_datetime(r1["Date"]).dt.to_period("M")
+    breakdown = r1.pivot_table(index="month", columns="Decision Type", values="Count", aggfunc="sum")
+    breakdown = breakdown.reindex(index=dec.index, columns=["Approved", "Declined"]).fillna(0)
     smc.DEC, smc.ACC, smc.OH = dec, acc, oh
     smc.QSD = 80
     origin = dec.index[-1]
     par = smc.estimate(origin, look=3)
+    arrivals, acc_pool = smc.acceptance_assumptions(origin)
     pv = smc.pitvals()
     cal_map = {a: float(np.clip(np.quantile(pv, a), 0.005, 0.995)) for a in (.10, .25, .50, .75, .90)}
 
@@ -67,14 +79,22 @@ def build_dataset(country_dir: Path):
         "series": {
             "months": months,
             "dec": [int(v) for v in dec.values],
+            "approved": [int(v) for v in breakdown["Approved"]],
+            "declined": [int(v) for v in breakdown["Declined"]],
             "acc": [int(v) for v in acc_aligned.values],
             "oh": [int(v) for v in oh_aligned.values],
+        },
+        "quality": {
+            # R8 可包含未正式受理记录，不强行让三表闭合；保留残差供页面说明。
+            "stockFlowResidual": int(oh.iloc[-1] - oh.iloc[-2] - acc.iloc[-1] + dec.iloc[-1]),
         },
         "params": {
             "mu": round(float(par["mu"]), 2),
             "sd_mu": round(float(par["sd_mu"]), 2),
             "pool": [round(float(v), 4) for v in par["pool"]],
-            "accPool": [int(v) for v in acc.tail(12).values],
+            "accPool": [int(v) for v in acc_pool],
+            "arrivals": arrivals,
+            "initialDisrupted": bool(par["initial_disrupted"]),
             "p_enter": round(float(par["p_enter"]), 4),
             "p_exit": round(float(par["p_exit"]), 4),
             "lo": round(float(par["lo"]), 4),
@@ -90,15 +110,19 @@ def build_dataset(country_dir: Path):
         # 保证 HTML 工具和模型脚本算出来的排队位置一致。加第二个国家时要改成按国家分开。
         "policy": {k: {"day": v["day"], "baseline": v["baseline"], "spreadDays": v["spread"]}
                    for k, v in smc.POLICY.items()},
-        "shock": SHOCK_DEFAULTS.get(code, {"fromMonth": months[-1], "defaultP": 0.35, "defaultDur": 2}),
+        "shock": {**SHOCK_DEFAULTS.get(code, {"defaultP": 0.35, "defaultDur": 2}),
+                  "fromMonth": str(origin + 1)},
     }
     return code, ds
 
 
 def run_checks(code: str, ds: dict, prev_month_count: Optional[int]):
     s = ds["series"]
-    lens = {len(s["months"]), len(s["dec"]), len(s["acc"]), len(s["oh"])}
-    assert len(lens) == 1, f"[{code}] 四个数组长度不一致: {lens}"
+    lens = {len(s[key]) for key in ("months", "dec", "approved", "declined", "acc", "oh")}
+    assert len(lens) == 1, f"[{code}] 数据数组长度不一致: {lens}"
+    assert all(a + d == total for a, d, total in zip(s["approved"], s["declined"], s["dec"])), (
+        f"[{code}] 批准与拒绝之和不等于决定量"
+    )
 
     ks = [mk(x) for x in s["months"]]
     assert all(b - a == 1 for a, b in zip(ks, ks[1:])), f"[{code}] 月份序列有跳月"
@@ -139,7 +163,7 @@ def read_prev_datasets(html_text: str):
     out = {}
     for code_m in re.finditer(r'\b([A-Z]{2}):\s*\{', block):
         code = code_m.group(1)
-        months_m = re.search(r'"months":\[([^\]]*)\]', block[code_m.end():code_m.end() + 20000])
+        months_m = re.search(r'"?months"?\s*:\s*\[([^\]]*)\]', block[code_m.end():code_m.end() + 20000])
         if months_m:
             count = months_m.group(1).count(",") + 1 if months_m.group(1).strip() else 0
             out[code] = count
@@ -186,7 +210,7 @@ def main():
         sys.exit(f"找不到 {RAW_ROOT}")
     country_dirs = sorted(p for p in RAW_ROOT.iterdir() if p.is_dir())
     if not country_dirs:
-        sys.exit(f"{RAW_ROOT} 下没有国家目录（例如 CN/），先按 _README.md 放好 CSV")
+        sys.exit(f"{RAW_ROOT} 下没有国家目录（例如 CN/），先按 README.md 放好 CSV")
 
     html_text = HTML_PATH.read_text(encoding="utf-8")
     prev_counts = read_prev_datasets(html_text)
@@ -198,7 +222,7 @@ def main():
         run_checks(code, ds, prev_counts.get(code))
         datasets[code] = ds
         old_mu = None
-        m = re.search(re.escape(code) + r':\s*\{.*?"mu":\s*([\d.]+)', html_text, re.S)
+        m = re.search(re.escape(code) + r':\s*\{.*?"?mu"?:\s*([\d.]+)', html_text, re.S)
         if m:
             old_mu = float(m.group(1))
         mu_note = f"mu {old_mu:.0f} → {ds['params']['mu']:.0f}" if old_mu is not None else f"mu = {ds['params']['mu']:.0f}"
@@ -218,6 +242,12 @@ def main():
             "HTML 里找不到 DATA:START/DATA:END 标记块——先在 <script> 里手工放一对空标记再跑。"
         )
 
+    # 初始静态标签也随数据同步；运行和重置时直接读取 DATASETS，避免默认值留在上个月。
+    default_mu = round(datasets["CN"]["params"]["mu"])
+    new_html = re.sub(r'(<b id="v-mu">)\d+( 份/月</b>)',
+                      lambda m: m[1] + str(default_mu) + m[2], new_html)
+    new_html = re.sub(r'(<input type="range" id="s-mu"[^>]*\bvalue=")\d+("[^>]*>)',
+                      lambda m: m[1] + str(default_mu) + m[2], new_html)
     HTML_PATH.write_text(new_html, encoding="utf-8")
     print("已写入", HTML_PATH)
     for line in summary_lines:

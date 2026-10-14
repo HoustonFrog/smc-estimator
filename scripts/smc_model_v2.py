@@ -3,15 +3,57 @@
 # 供 build_web_data.py 复用：import smc_model_v2 as smc; smc.DEC,smc.ACC,smc.OH=smc.load(raw_dir);
 #   par=smc.estimate(smc.DEC.index[-1], look=3); pv=smc.pitvals()
 
+from pathlib import Path
+
 import pandas as pd, numpy as np
 
 def load(raw_dir):
-    r1=pd.read_csv(raw_dir+"R1_Residence_Decisions_by_Decision_Type_and_Application_Substream.csv")
-    dec=r1.pivot_table(index='Date',values='Count',aggfunc='sum').sort_index()['Count']
-    acc=pd.read_csv(raw_dir+"R7_Residence_Accepted_by_Application_Stream.csv").set_index('Date')['Count']
-    oh =pd.read_csv(raw_dir+"R8_Residence_On_Hand_by_Application_Stream.csv").set_index('Date')['Count']
-    for s in (dec,acc,oh): s.index=pd.PeriodIndex(pd.to_datetime(s.index),freq='M')
-    return dec.astype(float),acc.astype(float),oh.astype(float)
+    """优先读原样保存的子流导出；所有报表只取 SMC，旧大流文件仅供兼容。"""
+    root=Path(raw_dir)
+    names={
+        'R1': ('R1_Residence_Decisions_by_Application_Substream_and_Decision_Type.csv',
+               'R1_Residence_Decisions_by_Decision_Type_and_Application_Substream.csv'),
+        'R7': ('R7_Residence_Accepted_by_Application_Substream.csv',
+               'R7_Residence_Accepted_by_Application_Stream.csv'),
+        'R8': ('R8_Residence_On_Hand_by_Application_Substream.csv',
+               'R8_Residence_On_Hand_by_Application_Stream.csv'),
+    }
+    result=[]
+    for kind, candidates in names.items():
+        path=next((root/name for name in candidates if (root/name).exists()), None)
+        if path is None: raise ValueError(f'{kind} 文件缺失：{root}')
+        frame=pd.read_csv(path)
+        if not {'Date','Count'}.issubset(frame.columns):
+            raise ValueError(f'{path.name} 缺少 Date/Count')
+        if 'Application Substream' in frame:
+            frame=frame[frame['Application Substream']=='SMC Skilled Residence'].copy()
+        elif kind!='R1' and 'Application Stream' in frame:
+            frame=frame[frame['Application Stream']=='Business / Skilled'].copy()
+        else:
+            raise ValueError(f'{path.name} 缺少可用于筛选 SMC 的类别列')
+        if frame.empty: raise ValueError(f'{path.name} 没有 SMC 数据')
+        keys=['Date']
+        if kind=='R1':
+            if 'Decision Type' not in frame or not frame['Decision Type'].isin(['Approved','Declined']).all():
+                raise ValueError(f'{path.name} 决定类型缺失或不受支持')
+            keys.append('Decision Type')
+        if frame[keys+['Count']].isna().any().any() or frame.duplicated(keys).any():
+            raise ValueError(f'{path.name} 有空值或重复统计键')
+        count=pd.to_numeric(frame['Count'],errors='raise')
+        if ((count<0)|(count%3!=0)|(~np.isfinite(count))).any():
+            raise ValueError(f'{path.name} 计数必须是非负的 RR3 整数')
+        dates=pd.to_datetime(frame['Date'],errors='raise')
+        if not dates.dt.is_month_end.all(): raise ValueError(f'{path.name} 日期不是月末')
+        frame['Count']=count
+        frame['month']=dates.dt.to_period('M')
+        series=frame.groupby('month')['Count'].sum().sort_index().astype(float)
+        if not series.index.equals(pd.period_range(series.index[0],series.index[-1],freq='M')):
+            raise ValueError(f'{path.name} 月份不连续')
+        result.append(series)
+    dec,acc,oh=result
+    if not acc.index.equals(oh.index) or not dec.index.isin(acc.index).all() or dec.index[-1]!=acc.index[-1]:
+        raise ValueError('R1/R7/R8 月份覆盖不一致，检查下载是否完整')
+    return dec,acc,oh
 REBOUND=1.0
 BLOCK=2
 DRIFT_CAP=0
@@ -30,6 +72,31 @@ def sadj(s):  return s/ pd.Series([s_of(p) for p in s.index],index=s.index)
 # day=生效日, baseline=若无新政的正常受理量, spread=超额部分集中到达的天数。
 # 只有一个数据集时放全局；将来加第二个国家要改成按国家分开。
 POLICY={"2026-08": dict(day=24, baseline=210, spread=2)}
+
+# 用户确认的需求侧情景：初期存量释放后回归新政前水平。
+# 3 个月是可调假设，不是从仅有的两个新政后样本拟合出来的预测。
+ARRIVAL_HALF_LIFE=3
+
+def acceptance_assumptions(origin):
+    hist=ACC.loc[:origin]
+    events=[pd.Period(k,'M') for k in POLICY if pd.Period(k,'M')<=origin]
+    if events:
+        pool=hist.loc[:max(events)-1].tail(6)
+        mode='mean-reversion'
+    else:
+        pool=hist.tail(12)
+        mode='bootstrap'
+    if pool.empty: raise ValueError('受理量基线没有足够历史数据')
+    cfg=dict(mode=mode,baseline=float(pool.mean()),latest=float(hist.iloc[-1]),
+             asOf=str(origin),baselineFrom=str(pool.index[0]),baselineTo=str(pool.index[-1]),
+             halfLifeMonths=ARRIVAL_HALF_LIFE)
+    return cfg,pool.values
+
+def acceptance_mean(cfg,months_ahead,half_life=None):
+    if cfg['mode']!='mean-reversion': return cfg['baseline']
+    half_life=cfg['halfLifeMonths'] if half_life is None else half_life
+    if half_life<=0: raise ValueError('受理量回落半衰期必须大于 0')
+    return cfg['baseline']+(cfg['latest']-cfg['baseline'])*2**(-max(months_ahead,0)/half_life)
 
 def acc_arrived(per, frac):
     """截至当月进度 frac(0~1) 时已经进入队列的当月受理量。无政策事件时退化为 frac*ACC。"""
@@ -71,7 +138,12 @@ def estimate(origin, look=6):
     nb=(~disrupt).sum(); nd=disrupt.sum()
     ep=int((disrupt.astype(int).diff()==1).sum())+int(bool(disrupt.iloc[0]))
     p_enter = ep/max(nb,1)                      # 每个正常月进入中断的概率
-    dur     = nd/ep if ep else 2.0
+    # 最后仍处于低产能的事件尚未结束，不能当作一个已完成的短事件压低时长。
+    completed=[]; run=0
+    for low in disrupt:
+        if low: run+=1
+        elif run: completed.append(run); run=0
+    dur=float(np.mean(completed)) if completed else 2.0
     p_exit  = 1/max(dur,1.0)
     lo = (hist[disrupt]/trail[disrupt]).mean() if nd else 0.30
     if not np.isfinite(lo): lo=0.30
@@ -86,6 +158,7 @@ def estimate(origin, look=6):
         sd_g=float(np.std(resid,ddof=2)/max(np.sqrt(((tt-tt.mean())**2).sum()),1e-9))*0.5
     else: g,sd_g=0.0,0.02
     return dict(mu=mu,pool=pool,p_enter=p_enter,p_exit=p_exit,lo=lo,g=g,sd_g=min(sd_g,0.06),
+                initial_disrupted=bool(disrupt.iloc[-1]),
                 n_norm=len(win),sd_mu=win.std(ddof=1)/np.sqrt(max(len(win),1)),disrupt=disrupt)
 
 # ---------- 模拟 ----------
@@ -101,7 +174,7 @@ def simulate(par,q_mean,q_sd,start,n=100000,H=30,force=None,seed=1):
     eps=np.concatenate([pool[ks[:,j][:,None]+np.arange(LB)[None,:]] for j in range(ks.shape[1])],axis=1)[:,:H]
     # 两状态马尔可夫
     st=np.zeros((n,H),bool)
-    cur=np.zeros(n,bool)
+    cur=np.full(n,par.get('initial_disrupted',False),dtype=bool)
     for t in range(H):
         u=rng.random(n)
         nxt=np.where(cur, u>par['p_exit'], u<par['p_enter'])
@@ -183,8 +256,12 @@ if __name__=="__main__":
     START=str(ORI+1)
     SHOCK=[ORI+1,ORI+2]; P_SHOCK=0.35
     par=estimate(ORI,look=3)
-    print("生产参数  mu=%.0f(标准误%.0f, 近3个月季调, look=3)  正常月波动sd=%.2f(块长2)  内生中断: 进入%.1f%%/月, 期望时长%.1f月, 产能倍数%.2f"%(
+    print("生产参数  mu=%.0f(标准误%.0f, 近期3个非中断月季调, look=3)  正常月波动sd=%.2f(块长2)  内生中断: 进入%.1f%%/月, 期望时长%.1f月, 产能倍数%.2f"%(
      par['mu'],par['sd_mu'],par['pool'].std(ddof=1),100*par['p_enter'],1/par['p_exit'],par['lo']))
+    arrivals,_=acceptance_assumptions(ORI)
+    print("初始低产能状态:",par['initial_disrupted'],"；允许按历史概率恢复，非永久低产能")
+    print("受理量情景（假设，非未来实际）:",arrivals,
+          "；未来1/3/6月均值:",[round(acceptance_mean(arrivals,k),1) for k in (1,3,6)])
 
     PV=pitvals(); MAP={a:float(np.clip(np.quantile(PV,a),0.005,0.995)) for a in (.10,.25,.50,.75,.90)}
     print("PIT标定映射:", {k:round(v,3) for k,v in MAP.items()})
@@ -200,11 +277,11 @@ if __name__=="__main__":
         rng=np.random.default_rng(99); hm=np.where(rng.random(N)<P_SHOCK,hs,hb)
         e26=max(i for i,x in enumerate(mb) if x<=pd.Period(str(ORI.year)+'-12','M'))
         store[lab]=(mb,hb,hs,hm,pathb,qe)
-        for tag,h in [('基准情景',hb),('新规冲击(条件情景)',hs),('混合(冲击概率35%)',hm)]:
+        for tag,h in [('逐步恢复',hb),('恢复较慢(条件情景)',hs),('混合(较慢权重35%)',hm)]:
             r=qm(mb,h,[.10,.25,.50,.75,.90]); c=qm(mb,h,[MAP[.10],MAP[.25],MAP[.50],MAP[.75],MAP[.90]])
             out.append(dict(提交时点=lab,有效排队=int(round(qe)),情景=tag,
               P10=r[0],P25=r[1],P50=r[2],P75=r[3],P90=r[4],
-              标定P10=c[0],标定P50=c[2],标定P90=c[4],年内获批概率="%.0f%%"%(100*(h<=e26).mean())))
+              标定P10=c[0],标定P50=c[2],标定P90=c[4],年内出决定概率="%.0f%%"%(100*(h<=e26).mean())))
     R=pd.DataFrame(out); R.to_csv('forecast_final.csv',index=False)
     print("\n"+R.to_string(index=False))
-    import pickle; pickle.dump({'store':{k:(v[0],v[1],v[2],v[3],v[5]) for k,v in store.items()},'par':par,'MAP':MAP,'PV':PV},open('res.pkl','wb'))
+    import pickle; pickle.dump({'store':{k:(v[0],v[1],v[2],v[3],v[5]) for k,v in store.items()},'par':par,'arrivals':arrivals,'MAP':MAP,'PV':PV},open('res.pkl','wb'))

@@ -182,6 +182,27 @@ svg{display:block;width:100%;height:auto;overflow:visible}
 .legend span{display:inline-flex;align-items:center;gap:6px}
 .legend i{width:10px;height:10px;border-radius:3px;display:inline-block}
 
+/* ---- 最近六个月的实际统计 ---- */
+.history-title{font-size:20px;font-weight:600;line-height:1.4;margin:0 0 6px}
+.history-period{font-size:13px;color:var(--ink-2);margin:0 0 18px}
+.history-summary{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;
+  padding-bottom:20px;margin-bottom:22px;border-bottom:.5px solid var(--sep)}
+.history-summary .k{font-size:13px;color:var(--ink-2)}
+.history-summary .v{font-size:clamp(22px,5vw,28px);font-weight:700;line-height:1.4;margin:4px 0 2px}
+.history-summary .m{font-size:12px;color:var(--ink-2)}
+.history-figure{margin:0}
+.history-figure+.history-figure{margin-top:24px;padding-top:22px;border-top:.5px solid var(--sep)}
+.history-figure h3{font-size:15px;font-weight:600;margin:0 0 6px}
+.history-figure .legend{margin:0 0 6px;flex-wrap:wrap;color:var(--ink-2)}
+.history-chart{width:100%;overflow:visible}
+.history-detail{font-size:13px;line-height:1.6;color:var(--ink-2);margin:6px 0 0;min-height:3.2em}
+.history-baseline,.history-foot{font-size:12px;line-height:1.65;color:var(--ink-2);margin:6px 0 0}
+.history-foot{padding-top:18px;margin-top:18px;border-top:.5px solid var(--sep)}
+.history-chart [role=button]{cursor:pointer}
+.history-chart [role=button]:focus{outline:none}
+.history-chart [role=button]:focus .history-bar,
+.history-chart [role=button]:focus .history-dot{stroke:var(--accent);stroke-width:2}
+
 /* ---- 微调滑块 ---- */
 .sliders{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:20px 28px;padding-top:6px}
 .sl{display:flex;flex-direction:column;gap:6px}
@@ -296,9 +317,9 @@ footer{margin-top:56px;font-size:15px;color:var(--ink-2);line-height:1.75;max-wi
 
     <div class="seg-wrap">
       <div class="chips" role="group" aria-label="情景选择" data-i18n-attr="aria-label:scen.group">
-        <button class="chip" id="sc-base"  aria-pressed="false" data-i18n="scen.base">一切顺利</button>
+        <button class="chip" id="sc-base"  aria-pressed="false" data-i18n="scen.base">逐步恢复</button>
         <button class="chip" id="sc-mix"   aria-pressed="true"  data-i18n="scen.mix">最可能</button>
-        <button class="chip" id="sc-shock" aria-pressed="false" data-i18n="scen.shock">政策收紧</button>
+        <button class="chip" id="sc-shock" aria-pressed="false" data-i18n="scen.shock">恢复较慢</button>
       </div>
     </div>
     <p class="scen-note" id="scen-note"></p>
@@ -309,12 +330,40 @@ footer{margin-top:56px;font-size:15px;color:var(--ink-2);line-height:1.75;max-wi
   <p class="sr-only" id="announce" aria-live="polite"></p>
 </section>
 
+<section id="s-history" class="gap-lg" aria-labelledby="history-heading">
+  <div class="card pad">
+    <h2 class="history-title" id="history-heading" data-i18n="history.title">最近 6 个月的实际趋势</h2>
+    <p class="history-period" id="history-period"></p>
+    <div class="history-summary">
+      <div><div class="k" id="history-acc-label">最新月受理</div><div class="v" id="history-acc">—</div><div class="m" id="history-acc-change">—</div></div>
+      <div><div class="k" id="history-dec-label">最新月决定</div><div class="v" id="history-dec">—</div><div class="m" id="history-dec-change">—</div></div>
+      <div><div class="k" id="history-oh-label">月末在办</div><div class="v" id="history-oh">—</div><div class="m" id="history-oh-change">—</div></div>
+    </div>
+    <figure class="history-figure">
+      <h3 id="history-flow-title" data-i18n="history.flow.title">每月受理与决定量</h3>
+      <div class="legend">
+        <span><i style="background:var(--accent)"></i><span data-i18n="history.acc">受理量</span></span>
+        <span><i style="background:var(--ink-2)"></i><span data-i18n="history.dec">决定量（批准＋拒绝）</span></span>
+      </div>
+      <svg class="history-chart" id="history-flow" viewBox="0 0 640 232" role="group" aria-labelledby="history-flow-title" aria-describedby="history-flow-detail"></svg>
+      <figcaption><p class="history-detail" id="history-flow-detail" role="status" aria-live="polite"></p>
+        <p class="history-baseline" id="history-baseline"></p></figcaption>
+    </figure>
+    <figure class="history-figure">
+      <h3 id="history-stock-title" data-i18n="history.stock.title">月末在办量</h3>
+      <svg class="history-chart" id="history-stock" viewBox="0 0 640 232" role="group" aria-labelledby="history-stock-title" aria-describedby="history-stock-detail"></svg>
+      <figcaption class="history-detail" id="history-stock-detail" role="status" aria-live="polite"></figcaption>
+    </figure>
+    <p class="history-foot" data-i18n="history.foot">中国籍 SMC 汇总计数。点击、悬停或用键盘选中月份可查看数值。决定量包含批准与拒绝；在办量为实际月末快照，三表存在口径差额，不能由受理减决定直接累加推算。</p>
+  </div>
+</section>
+
 <section id="s-explainer" class="reveal gap-lg">
   <p class="grouptitle" data-i18n="group.why">这个数是怎么来的</p>
   <div class="card">
     <div class="explainer">
       <div class="exp-num"><div class="k" data-i18n="exp.queue">你前面还排着</div><div class="v" id="q">—</div></div>
-      <div class="exp-num"><div class="k" data-i18n="exp.capacity">移民局每个月能处理</div><div class="v" id="mu-display">—</div></div>
+      <div class="exp-num"><div class="k" data-i18n="exp.capacity">正常月份处理能力</div><div class="v" id="mu-display">—</div></div>
     </div>
     <div class="exp-note" data-i18n="exp.note">↳ 这个工具做的事，就是把这两个数放在一起，再考虑一月放假、政策变动、处理速度的波动，模拟两万种可能的未来。</div>
     <div class="oddsrow">
@@ -335,17 +384,21 @@ footer{margin-top:56px;font-size:15px;color:var(--ink-2);line-height:1.75;max-wi
     <summary><h2 data-i18n="d.adjust.title">微调假设</h2></summary>
     <div class="dbody">
       <div class="sliders">
-        <div class="sl"><div class="top"><label for="s-p" data-i18n="d.adjust.p">政策收紧的可能性有多大</label><b id="v-p">35%</b></div>
+        <div class="sl"><div class="top"><label for="s-p" data-i18n="d.adjust.p">恢复较慢情景的权重</label><b id="v-p">35%</b></div>
           <input type="range" id="s-p" min="0" max="100" step="5" value="35"></div>
-        <div class="sl"><div class="top"><label for="s-dur" data-i18n="d.adjust.dur">一旦收紧会停滞几个月</label><b id="v-dur">2 个月</b></div>
+        <div class="sl"><div class="top"><label for="s-dur" data-i18n="d.adjust.dur">较慢情景先持续低产能多久</label><b id="v-dur">2 个月</b></div>
           <input type="range" id="s-dur" min="1" max="6" step="1" value="2"></div>
-        <div class="sl"><div class="top"><label for="s-mu" data-i18n="d.adjust.mu">移民局每月能处理多少份</label><b id="v-mu">239 份/月</b></div>
-          <input type="range" id="s-mu" min="120" max="380" step="1" value="239"></div>
+        <div class="sl"><div class="top"><label for="s-mu" data-i18n="d.adjust.mu">恢复后的正常月产能</label><b id="v-mu">240 份/月</b></div>
+          <input type="range" id="s-mu" min="120" max="380" step="1" value="240"></div>
+        <div class="sl"><div class="top"><label for="s-half" data-i18n="d.adjust.half">超额受理量减半需要多久</label><b id="v-half">3 个月</b></div>
+          <input type="range" id="s-half" min="1" max="12" step="1" value="3"></div>
         <div class="sl"><div class="top"><label for="s-min" data-i18n="d.adjust.min">最快也要审这么久</label><b id="v-min">1 个月</b></div>
           <input type="range" id="s-min" min="1" max="4" step="1" value="1"></div>
       </div>
+      <p class="hint" id="arrival-note"></p>
+      <p class="hint" id="capacity-note"></p>
       <label class="chk" for="cal">
-        <span class="chk-text"><b data-i18n="d.adjust.cal.b">按历史偏差修正</b><span data-i18n="d.adjust.cal.tag">（结果会提前约 1 个月）</span><br>
+        <span class="chk-text"><b data-i18n="d.adjust.cal.b">按历史偏差修正</b><span data-i18n="d.adjust.cal.tag">（按回测分位数调整）</span><br>
         <span data-i18n="d.adjust.cal.note">↳ 过去的验证显示这个模型总是估得偏慢。勾上就按这个规律往前调。</span></span>
         <input type="checkbox" id="cal" role="switch">
         <span class="switch" aria-hidden="true"></span>
@@ -377,16 +430,16 @@ footer{margin-top:56px;font-size:15px;color:var(--ink-2);line-height:1.75;max-wi
       <p data-i18n="d.how.p2">模型的原生分辨率是<b>月</b>——公开数据只有月度汇总，没有更细的。日期是清队那个月内部按工作日插值出来的参考点，不是预约时间。把它当作 <b>±2 周</b> 的锚点来读；要做实际安排，请用「最慢」那一列。</p>
       <h3 data-i18n="d.how.h3">产能怎么模拟</h3>
       <ul>
-        <li data-i18n="d.how.l1">基础水平取近 3 个月的季节调整值。模型会模拟「连着好几个月慢下来」这种情况，不是假设每月速度各自独立。</li>
+        <li data-i18n="d.how.l1">正常产能取近期 3 个非中断月的季节调整值。最近实际状态作为模拟起点，低产能可能延续，也可能逐步恢复。</li>
         <li data-i18n="d.how.l2"><b>季节性</b>：1 月新西兰放暑假，移民局处理量只有平时的四分之一；2 月还没完全恢复。</li>
-        <li data-i18n="d.how.l3"><b>中断风险</b>：模型本身已经把「突然停摆」的风险算进去了，参照 2025 年 9–10 月那一次——这是<b>「一切顺利」情景就已经包含</b>的内生风险。</li>
+        <li data-i18n="d.how.l3"><b>中断与恢复</b>：依据历史低产能月份估计进入中断和恢复的概率。样本较少，不能据此承诺恢复时间。</li>
         <li data-i18n="d.how.l4"><b>排队位置的不确定性</b>：因为有人中途撤回，移民局也可能不完全按先来后到处理。</li>
       </ul>
       <h3 data-i18n="d.how.h4">三种情景的区别</h3>
       <ul>
-        <li data-i18n="d.how.l5"><b>一切顺利</b>：只含上面那个内生中断风险。</li>
-        <li data-i18n="d.how.l6"><b>政策收紧</b>：额外假设 8 月新规确实拖慢了审理，强制中断若干个月，结束后按规律自然退出，可能拖长。</li>
-        <li data-i18n="d.how.l7"><b>最可能</b>：按设定的概率在上面两者之间加权，默认三成——仅依据 2025 年 9 月那一次先例，可以自己调。</li>
+        <li data-i18n="d.how.l5"><b>逐步恢复</b>：从最近实际产能状态出发，按历史估计恢复，也保留再次放缓的风险。</li>
+        <li data-i18n="d.how.l6"><b>恢复较慢</b>：先持续若干个月低产能，再按历史估计恢复。</li>
+        <li data-i18n="d.how.l7"><b>最可能</b>：混合上述两种路径，较慢情景默认权重 35%，属于可调假设。</li>
       </ul>
       <p class="hint" data-i18n="d.how.codes">数据来源：移民局 R1（决定量）、R7（受理量）、R8（在办量），已按中国国籍筛选。</p>
     </div>
@@ -395,18 +448,19 @@ footer{margin-top:56px;font-size:15px;color:var(--ink-2);line-height:1.75;max-wi
   <details>
     <summary><h2 data-i18n="d.limits.title">这个估算有哪些做不到的</h2></summary>
     <div class="dbody">
-      <h3 data-i18n="d.limits.h1">模型仍然偏慢约 1 个月</h3>
+      <h3 data-i18n="d.limits.h1">历史回测中预测偏慢</h3>
       <p data-i18n="d.limits.p1">过去的验证显示，实际落点比预测偏早——原因可辨识：移民局产能有几次在 2–4 个月内近乎翻倍，任何只看历史数据的模型都预判不了这种跃升。所以真实落点更可能靠近区间的偏早一端。</p>
       <h3 data-i18n="d.limits.h2">假设先进先出</h3>
       <p data-i18n="d.limits.p2">移民局是否严格按递交顺序处理未知，也可能按 EOI 分数或案件复杂度调整顺序。排队位置的估算只部分覆盖了这个风险。</p>
       <h3 data-i18n="d.limits.h3">「在办」里有不消耗产能的案子</h3>
       <p data-i18n="d.limits.p3">在办量包含等待补件、体检的滞留案。这些案子占着队列但不消耗当期处理产能，所以对材料齐全的申请人来说，真实排在前面的人可能少于账面值——这是一个方向明确的乐观因素。</p>
       <h3 data-i18n="d.limits.h4" id="limits-scope-h">口径提醒</h3>
-      <p data-i18n="d.limits.scope" id="limits-scope-p">消耗队列速度的数据只统计「技术移民」这一子类，但队列存量的数据统计口径更宽，包含商业类别在内。也就是说队列长度可能被系统性略微高估——这与「模型总是偏慢」的方向是一致的。</p>
+      <p data-i18n="d.limits.scope" id="limits-scope-p">本次 R1、R7、R8 均筛选同一 SMC Skilled Residence 子类别。CSV 不含国籍及主副申请人筛选信息：中国籍由下载条件及历史对照支持，计数是否只含主申请人无法从文件独立确认。</p>
       <h3 data-i18n="d.limits.h5">递交日期越靠后，结果越依赖外推</h3>
-      <p data-i18n="d.limits.p4" id="limits-extrap">数据截止日期之后的递交日期，模型需要自行推演积压的演变。这个外推在半年内还算可信，再往后就要当作「假设当前产能和受理量都保持不变」的条件结论来读。模型只算排队时间，不含审核本身的固有耗时——第三方 visatimes.nz 显示 SMC 中位处理时长约 50 个工作日（约 2.3 个月）。</p>
+      <p data-i18n="d.limits.p4" id="limits-extrap">未来受理量逐步回归新政前水平、产能从低谷恢复，均属于情景假设。新政后目前只有两个月数据，无法验证回落速度或长期产能。递交日期越远，结果越依赖这些假设；最短审核耗时可在「微调假设」中调整。</p>
       <h3 data-i18n="d.limits.h6">数据本身</h3>
       <p id="limits-data" data-i18n-fmt="d.limits.p5">数据覆盖至 — ；新数据公布后需要重新估参。</p>
+      <p id="limits-flow"></p>
     </div>
   </details>
 </section>
@@ -431,7 +485,7 @@ const DATASETS = {
         zh: "中国",
         en: "China"
       },
-      updatedTo: "2026-08",
+      updatedTo: "2026-09",
       firstMonth: "2023-11"
     },
     series: {
@@ -469,20 +523,36 @@ const DATASETS = {
         "2026-05",
         "2026-06",
         "2026-07",
-        "2026-08"
+        "2026-08",
+        "2026-09"
       ],
-      dec: [6,27,9,21,18,48,12,21,51,84,30,78,33,30,21,159,171,147,219,111,105,90,24,42,105,174,18,198,249,204,294,351,159,207],
-      acc: [45,27,30,60,27,51,42,45,30,57,132,24,81,99,93,120,132,111,132,114,135,219,168,168,165,171,156,177,189,219,219,192,210,1041],
-      oh: [99,102,120,156,165,165,192,216,195,168,261,210,255,330,396,357,318,288,186,192,216,348,348,624,669,672,813,792,789,723,720,510,552,1176]
+      dec: [6,27,6,18,21,48,12,21,51,87,30,78,33,27,21,156,171,150,219,111,102,90,27,42,108,174,15,201,249,204,294,354,162,204,84],
+      approved: [0,27,6,12,18,42,12,18,48,84,24,66,30,27,15,153,171,144,216,102,102,84,18,30,96,156,15,186,246,201,294,348,150,201,78],
+      declined: [6,0,0,6,3,6,0,3,3,3,6,12,3,0,6,3,0,6,3,9,0,6,9,12,12,18,0,15,3,3,0,6,12,3,6],
+      acc: [45,30,30,60,27,51,42,48,30,57,129,24,81,99,90,120,129,111,135,114,135,219,171,168,168,171,153,177,189,216,222,192,210,1041,792],
+      oh: [99,99,123,156,165,165,192,216,195,168,261,210,255,330,396,360,321,288,186,189,216,345,345,624,669,675,813,792,789,723,720,510,549,1176,2010]
+    },
+    quality: {
+      stockFlowResidual: 126
     },
     params: {
-      mu: 239.0,
-      sd_mu: 57.69,
-      pool: [1.1758,0.924,0.7943,1.3765,0.924,0.924,1.5312,0.3823,1.0551,0.9877,0.757,1.091,1.5668,0.5865,0.924],
-      accPool: [168,168,165,171,156,177,189,219,219,192,210,1041],
-      p_enter: 0.0312,
+      mu: 240.0,
+      sd_mu: 58.28,
+      pool: [1.1209,0.9161,0.8036,1.3376,0.9161,0.9161,1.476,0.3159,1.062,0.9647,0.7506,1.0817,1.5898,0.7275,1.0213],
+      accPool: [177,189,216,222,192,210],
+      arrivals: {
+        mode: "mean-reversion",
+        baseline: 201.0,
+        latest: 792.0,
+        asOf: "2026-09",
+        baselineFrom: "2026-02",
+        baselineTo: "2026-07",
+        halfLifeMonths: 3
+      },
+      initialDisrupted: true,
+      p_enter: 0.0625,
       p_exit: 0.5,
-      lo: 0.2875,
+      lo: 0.324,
       seas: {
         "1": 0.25,
         "2": 0.85
@@ -493,11 +563,11 @@ const DATASETS = {
     calibration: {
       n: 20,
       map: {
-        "0.10": 0.018,
-        "0.25": 0.088,
-        "0.50": 0.273,
-        "0.75": 0.527,
-        "0.90": 0.816
+        "0.10": 0.017,
+        "0.25": 0.067,
+        "0.50": 0.2,
+        "0.75": 0.539,
+        "0.90": 0.815
       }
     },
     policy: {
@@ -508,7 +578,7 @@ const DATASETS = {
       }
     },
     shock: {
-      fromMonth: "2026-08",
+      fromMonth: "2026-10",
       defaultP: 0.35,
       defaultDur: 2
     }
@@ -619,6 +689,22 @@ function mkRng(seed){let s=seed>>>0||1;return function(){s^=s<<13;s>>>=0;s^=s>>>
 function norm(r){const u=Math.max(r(),1e-12),v=r();return Math.sqrt(-2*Math.log(u))*Math.cos(6.283185307179586*v);}
 function seasOf(ds,k){const v=ds.params.seas[String(KM(k))];return v===undefined?1:v;}
 
+// 受理量回归速度是可调情景。波动保留新政前 6 个月的相对变化。
+function acceptanceMean(ds,monthsAhead,halfLife){
+  const a=ds.params.arrivals;
+  if(!a)return ds.params.accPool.reduce(function(s,v){return s+v;},0)/ds.params.accPool.length;
+  if(a.mode!=="mean-reversion")return a.baseline;
+  const h=halfLife==null?a.halfLifeMonths:halfLife;
+  if(h<=0)throw new Error("受理量回落半衰期必须大于 0");
+  return a.baseline+(a.latest-a.baseline)*Math.pow(2,-Math.max(monthsAhead,0)/h);
+}
+function acceptedAt(ds,ctx,key,baselineSample,halfLife){
+  const a=ds.params.arrivals;
+  if(!a||a.mode!=="mean-reversion")return baselineSample;
+  const mean=acceptanceMean(ds,key-ctx.LASTK,halfLife);
+  return a.baseline>0?baselineSample*mean/a.baseline:mean;
+}
+
 function simulate(ds,ctx,o){
   const N=o.nPaths||20000,H=o.H||54;
   const rng=mkRng(o.seed!=null?o.seed:ctx.seed);
@@ -629,7 +715,7 @@ function simulate(ds,ctx,o){
   for(let i=0;i<N;i++){
     const mu=Math.max(o.mu+norm(rng)*Pp.sd_mu,20);
     const shocked=rng()<o.shockP;
-    let dis=false,B=ctx.OH_LAST,q=null,cum=0,got=BIG,k0=0;
+    let dis=!!Pp.initialDisrupted,B=ctx.OH_LAST,q=null,cum=0,got=BIG,k0=0;
     let bi=Math.floor(rng()*nb),bj=0;
     if(o.mode==="past"){q=o.queue+norm(rng)*Pp.qsd;if(q<1)q=1;}
     for(let tt=0;tt<H;tt++){
@@ -639,7 +725,7 @@ function simulate(ds,ctx,o){
       if(bj>=blk){bi=Math.floor(rng()*nb);bj=0;}
       const eps=pool[bi+bj];bj++;
       let dec=mu*seasOf(ds,key)*eps*(dis?Pp.lo:1);
-      const acc=Pp.accPool[Math.floor(rng()*Pp.accPool.length)];
+      const acc=acceptedAt(ds,ctx,key,Pp.accPool[Math.floor(rng()*Pp.accPool.length)],o.halfLife);
       if(o.mode==="future"){
         if(key===o.joinKey){q=B+o.frac*acc+norm(rng)*Pp.qsd;if(q<1)q=1;k0=tt;}
         if(dec>B+acc)dec=B+acc;
@@ -722,18 +808,18 @@ function plan(ds,ctx,dateStr){
 function fmtMonthBoundary(k){
   return dtfMonth().format(new Date(Date.UTC(KY(k),KM(k)-1,1)));
 }
-function estQueue(ds,ctx,scenP,scenDur,mu,pl){
+function estQueue(ds,ctx,scenP,scenDur,mu,pl,halfLife){
   const N=2500,rng=mkRng(99),Pp=ds.params,pool=Pp.pool,blk=Pp.block,nb=Math.max(pool.length-blk+1,1),res=[];
   for(let i=0;i<N;i++){
     const m2=Math.max(mu+norm(rng)*Pp.sd_mu,20);const shocked=rng()<scenP;
-    let dis=false,B=ctx.OH_LAST,bi=Math.floor(rng()*nb),bj=0,q=0;
+    let dis=!!Pp.initialDisrupted,B=ctx.OH_LAST,bi=Math.floor(rng()*nb),bj=0,q=0;
     for(let tt=0;tt<54;tt++){
       const key=ctx.START+tt;
       if(shocked&&tt<scenDur)dis=true;else{const u=rng();dis=dis?(u>Pp.p_exit):(u<Pp.p_enter);}
       if(bj>=blk){bi=Math.floor(rng()*nb);bj=0;}
       const eps=pool[bi+bj];bj++;
       let dec=m2*seasOf(ds,key)*eps*(dis?Pp.lo:1);
-      const acc=Pp.accPool[Math.floor(rng()*Pp.accPool.length)];
+      const acc=acceptedAt(ds,ctx,key,Pp.accPool[Math.floor(rng()*Pp.accPool.length)],halfLife);
       if(key===pl.joinKey){q=B+pl.frac*acc;break;}
       if(dec>B+acc)dec=B+acc;
       B=Math.max(B+acc-dec,0);
@@ -748,14 +834,14 @@ function estQueue(ds,ctx,scenP,scenDur,mu,pl){
 const $=function(id){return document.getElementById(id);};
 let CODE="CN";
 let END_YEAR, END_MID; // 从「今天」推导，与数据集无关，跟 CODE 切换无关
-const S={date:"",scen:"mix",p:35,dur:2,mu:239,min:1,cal:false};
+const S={date:"",scen:"mix",p:35,dur:2,mu:Math.round(DATASETS.CN.params.mu),halfLife:DATASETS.CN.params.arrivals.halfLifeMonths,min:1,cal:false};
 const CH=[["sc-base","base"],["sc-mix","mix"],["sc-shock","shock"]];
 function scenP(){return S.scen==="base"?0:S.scen==="shock"?1:S.p/100;}
 function dstr(v){return v>=BIG?t("far.future"):fmtDate(v);}
 function monthsToText(days){return Math.round(days/30.44*10)/10;}
 
 function opts(ctx,pl,n){return{mode:pl.mode,queue:pl.queue,joinKey:pl.joinKey,frac:pl.frac,subDay:pl.subDay,
-  shockP:scenP(),shockDur:S.dur,mu:S.mu,minService:S.min,nPaths:n||20000,seed:ctx.seed};}
+  shockP:scenP(),shockDur:S.dur,mu:S.mu,halfLife:S.halfLife,minService:S.min,nPaths:n||20000,seed:ctx.seed};}
 
 let lastFull=null; // 最近一次 20000 条完整结果，供折叠区图表/概率复用
 let idleHandle=null;
@@ -772,10 +858,17 @@ function render(nPaths,dateChanged){
   CH.forEach(function(c){$(c[0]).setAttribute("aria-pressed",String(S.scen===c[1]));});
   $("v-p").textContent=S.p+"%";$("v-dur").textContent=t("unit.months",{n:S.dur});
   $("v-mu").textContent=t("unit.perMonth",{n:S.mu});$("v-min").textContent=t("unit.months",{n:S.min});
+  $("v-half").textContent=t("unit.months",{n:S.halfLife});
+  const arrivals=ds.params.arrivals;
+  $("arrival-note").textContent=t("d.adjust.arrivalNote",{latest:arrivals.latest,baseline:arrivals.baseline,
+    half:S.halfLife,next:Math.round(acceptanceMean(ds,1,S.halfLife)),third:Math.round(acceptanceMean(ds,3,S.halfLife))});
+  $("capacity-note").textContent=t("d.adjust.capacityNote",{actual:ds.series.dec[ds.series.dec.length-1],normal:S.mu,
+    recovery:Math.round(ds.params.p_exit*100)});
   $("s-p").setAttribute("aria-valuetext",S.p+"%");
   $("s-dur").setAttribute("aria-valuetext",t("unit.months",{n:S.dur}));
   $("s-mu").setAttribute("aria-valuetext",t("unit.perMonth",{n:S.mu}));
   $("s-min").setAttribute("aria-valuetext",t("unit.months",{n:S.min}));
+  $("s-half").setAttribute("aria-valuetext",t("unit.months",{n:S.halfLife}));
 
   const pl=plan(ds,ctx,S.date), banIn=$("banner-input"), banRes=$("banner-result");
   banIn.hidden=true; banIn.className="banner";
@@ -818,7 +911,7 @@ function render(nPaths,dateChanged){
   const waitTxt=days===null?t("wait.outOfRange"):t("wait.text",{n:monthsToText(days)})+(S.cal?t("wait.calSuffix"):"");
   $("wait").textContent=waitTxt;
   if(pl.mode==="future"){
-    $("q").textContent=t("approx.prefix")+estQueue(ds,ctx,scenP(),S.dur,S.mu,pl);
+    $("q").textContent=t("approx.prefix")+estQueue(ds,ctx,scenP(),S.dur,S.mu,pl,S.halfLife);
   }else{
     $("q").textContent=Math.round(pl.queue);
   }
@@ -898,7 +991,7 @@ function renderCompare(ds,ctx){
         const s=sortAsc(simulate(ds,ctx,opts(ctx,pl,6000)));
         const p50=qt(s,S.cal?calFwd(ds,0.50):0.50);
         mid=dstr(p50);
-        qtxt=(pl.mode==="future"?t("approx.prefix")+estQueue(ds,ctx,scenP(),S.dur,S.mu,pl):Math.round(pl.queue))+t("cmp.unit");
+        qtxt=(pl.mode==="future"?t("approx.prefix")+estQueue(ds,ctx,scenP(),S.dur,S.mu,pl,S.halfLife):Math.round(pl.queue))+t("cmp.unit");
       }
     }
     card.innerHTML='<div class="tag">'+t(tags[i])+'</div>'+
@@ -920,6 +1013,92 @@ renderCompare._pendingScen=false;
 /* ---------- 时间轴区间条（新主视觉） ---------- */
 const NS="http://www.w3.org/2000/svg";
 function svgEl(tag,attrs){const e=document.createElementNS(NS,tag);for(const k in attrs)e.setAttribute(k,attrs[k]);return e;}
+
+function historyRows(ds){
+  const s=ds.series,start=Math.max(0,s.months.length-6);
+  return s.months.slice(start).map(function(month,j){
+    const i=start+j;
+    return {month:month,acc:s.acc[i],dec:s.dec[i],oh:s.oh[i],
+      approved:s.approved[i],declined:s.declined[i],previousOh:i?s.oh[i-1]:null};
+  });
+}
+function historyNumber(n){return new Intl.NumberFormat(locale()).format(n);}
+function historyMonth(month){const a=month.split("-");return dtfMonth().format(new Date(Date.UTC(+a[0],+a[1]-1,1)));}
+function historyDetail(row,kind){
+  if(kind==="flow")return t("history.flow.detail",{month:historyMonth(row.month),acc:historyNumber(row.acc),
+    dec:historyNumber(row.dec),approved:historyNumber(row.approved),declined:historyNumber(row.declined)});
+  return t("history.stock.detail",{month:historyMonth(row.month),oh:historyNumber(row.oh)});
+}
+function drawHistory(ds,rows,kind){
+  const svg=$(kind==="flow"?"history-flow":"history-stock"),H=232;
+  const W=Math.max(260,Math.round(svg.parentElement.getBoundingClientRect().width)||640);
+  svg.setAttribute("viewBox","0 0 "+W+" "+H);
+  svg.setAttribute("data-axis-min","0");
+  while(svg.firstChild)svg.removeChild(svg.firstChild);
+  const baseline=ds.params.arrivals.baseline;
+  const maxValue=kind==="flow"?Math.max(baseline,...rows.map(function(r){return Math.max(r.acc,r.dec);})):
+    Math.max(...rows.map(function(r){return r.oh;}));
+  const rawStep=Math.max(maxValue/4,1),unit=Math.pow(10,Math.floor(Math.log10(rawStep)));
+  const step=Math.ceil(rawStep/unit)*unit,max=Math.max(step,Math.ceil(maxValue/step)*step);
+  const L=44,R=16,T=28,B=28,iw=W-L-R,ih=H-T-B,cell=iw/rows.length;
+  const x=function(i){return L+(i+.5)*cell;},y=function(v){return T+ih-v/max*ih;};
+  for(let value=0;value<=max;value+=step){
+    svg.appendChild(svgEl("line",{x1:L,y1:y(value),x2:W-R,y2:y(value),stroke:"var(--fill-1)","stroke-width":1}));
+    const label=svgEl("text",{x:L-8,y:y(value)+4,"text-anchor":"end","font-size":11,fill:"var(--ink-2)"});
+    label.textContent=historyNumber(value);svg.appendChild(label);
+  }
+  if(kind==="flow"){
+    svg.appendChild(svgEl("line",{x1:L,y1:y(baseline),x2:W-R,y2:y(baseline),stroke:"var(--ink-3)",
+      "stroke-dasharray":"4,4","stroke-width":1}));
+  }else{
+    svg.appendChild(svgEl("path",{d:rows.map(function(r,i){return (i?"L":"M")+x(i)+","+y(r.oh);}).join(" "),
+      fill:"none",stroke:"var(--warn)","stroke-width":2.5,"stroke-linejoin":"round"}));
+  }
+  rows.forEach(function(row,i){
+    const group=svgEl("g",{role:"button",tabindex:0,"aria-label":historyDetail(row,kind)});
+    if(kind==="flow"){
+      const bw=Math.min(24,(cell-12)/2),gap=4;
+      [[row.acc,-bw-gap/2,"var(--accent)"],[row.dec,gap/2,"var(--ink-2)"]].forEach(function(bar){
+        group.appendChild(svgEl("rect",{class:"history-bar",x:x(i)+bar[1],y:y(bar[0]),width:bw,
+          height:Math.max(y(0)-y(bar[0]),0),rx:2,fill:bar[2]}));
+        if(W>=420){
+          const label=svgEl("text",{x:x(i)+bar[1]+bw/2,y:y(bar[0])-6,"text-anchor":"middle",
+            "font-size":11,fill:"var(--ink-2)"});
+          label.textContent=historyNumber(bar[0]);group.appendChild(label);
+        }
+      });
+    }else{
+      group.appendChild(svgEl("circle",{class:"history-dot",cx:x(i),cy:y(row.oh),r:4,fill:"var(--warn)"}));
+      const label=svgEl("text",{x:x(i),y:y(row.oh)-12,"text-anchor":"middle","font-size":11,fill:"var(--ink-2)"});
+      label.textContent=historyNumber(row.oh);group.appendChild(label);
+    }
+    group.appendChild(svgEl("rect",{x:x(i)-cell/2+2,y:T,width:cell-4,height:ih,fill:"transparent"}));
+    const show=function(){
+      $(kind==="flow"?"history-flow-detail":"history-stock-detail").textContent=historyDetail(row,kind);
+    };
+    group.addEventListener("mouseenter",show);group.addEventListener("focus",show);group.addEventListener("click",show);
+    group.addEventListener("keydown",function(e){if(e.key==="Enter"||e.key===" "){e.preventDefault();show();}});
+    svg.appendChild(group);
+    const a=row.month.split("-"),label=svgEl("text",{x:x(i),y:H-7,"text-anchor":"middle","font-size":11,fill:"var(--ink-2)"});
+    label.textContent=dtfMonthShort().format(new Date(Date.UTC(+a[0],+a[1]-1,1)));svg.appendChild(label);
+  });
+}
+function renderHistory(){
+  const ds=DATASETS[CODE],rows=historyRows(ds),latest=rows[rows.length-1],previous=rows[rows.length-2];
+  $("history-period").textContent=t("history.period",{from:historyMonth(rows[0].month),to:historyMonth(latest.month)});
+  ["acc","dec","oh"].forEach(function(key){
+    $("history-"+key+"-label").textContent=t("history.latest."+key,{month:historyMonth(latest.month)});
+    $("history-"+key).textContent=historyNumber(latest[key]);
+    const pct=previous&&previous[key]>0?Math.round((latest[key]/previous[key]-1)*100):null;
+    $("history-"+key+"-change").textContent=pct===null?"—":t("history.change",{pct:(pct>0?"+":"")+pct+"%"});
+  });
+  const a=ds.params.arrivals;
+  $("history-baseline").textContent=t("history.baseline",{from:historyMonth(a.baselineFrom),to:historyMonth(a.baselineTo),n:historyNumber(a.baseline)});
+  ["flow","stock"].forEach(function(kind){
+    drawHistory(ds,rows,kind);
+    $(kind==="flow"?"history-flow-detail":"history-stock-detail").textContent=historyDetail(latest,kind);
+  });
+}
 function drawTimeline(d){
   const svg=$("tl"),H=150;
   const measured=Math.round(svg.parentElement.getBoundingClientRect().width);
@@ -1107,15 +1286,16 @@ function setupSticky(){
 
 /* ---------- 事件 ---------- */
 function bindEvents(){
+  window.addEventListener("resize",renderHistory);
   $("d").addEventListener("input",function(e){if(e.target.value){S.date=e.target.value;try{localStorage.setItem("smc-date",S.date);}catch(err){}schedule({date:true});}});
   CH.forEach(function(c){$(c[0]).addEventListener("click",function(){S.scen=c[1];renderCompare._pendingScen=true;schedule({date:true});});});
-  [["s-p","p"],["s-dur","dur"],["s-mu","mu"],["s-min","min"]].forEach(function(pr){
+  [["s-p","p"],["s-dur","dur"],["s-mu","mu"],["s-half","halfLife"],["s-min","min"]].forEach(function(pr){
     $(pr[0]).addEventListener("input",function(e){S[pr[1]]=+e.target.value;if(pr[1]==="p"&&S.scen!=="mix"){S.scen="mix";renderCompare._pendingScen=true;}schedule({});});
   });
   $("cal").addEventListener("change",function(e){S.cal=e.target.checked;schedule({date:true});});
   $("reset").addEventListener("click",function(){
-    S.scen="mix";S.p=35;S.dur=2;S.mu=239;S.min=1;S.cal=false;
-    $("s-p").value=35;$("s-dur").value=2;$("s-mu").value=239;$("s-min").value=1;$("cal").checked=false;
+    S.scen="mix";S.p=35;S.dur=2;S.mu=Math.round(DATASETS[CODE].params.mu);S.halfLife=DATASETS[CODE].params.arrivals.halfLifeMonths;S.min=1;S.cal=false;
+    $("s-p").value=35;$("s-dur").value=2;$("s-mu").value=S.mu;$("s-half").value=S.halfLife;$("s-min").value=1;$("cal").checked=false;
     renderCompare._pendingScen=true; schedule({date:true});
   });
 }
@@ -1142,7 +1322,7 @@ window.SMC_DEBUG={
         pr26raw:Math.round(100*pr26raw),pr27raw:Math.round(100*pr27raw),
         pr26cal:Math.round(100*(S.cal?calInv(ds,pr26raw):pr26raw)),
         pr27cal:Math.round(100*(S.cal?calInv(ds,pr27raw):pr27raw)),
-        q: pl.mode==="future"?estQueue(ds,ctx,scen==="base"?0:scen==="shock"?1:S.p/100,S.dur,S.mu,pl):Math.round(pl.queue)};
+        q: pl.mode==="future"?estQueue(ds,ctx,scen==="base"?0:scen==="shock"?1:S.p/100,S.dur,S.mu,pl,S.halfLife):Math.round(pl.queue)};
     }
     S.scen=savedScen; S.cal=savedCal;
     return out;
@@ -1154,12 +1334,15 @@ function updateDataLabels(){
   const updatedLabel=dtfMonth().format(new Date(Date.UTC(+ds.meta.updatedTo.split("-")[0],+ds.meta.updatedTo.split("-")[1]-1,1)));
   $("notice-updated").textContent=t("notice.updated",{date:updatedLabel});
   $("limits-data").textContent=t("d.limits.p5",{updated:updatedLabel});
+  $("limits-flow").textContent=t("d.limits.flow",{residual:ds.quality.stockFlowResidual});
+  renderHistory();
 }
 
 function init(){
   Object.assign(STR.zh,I18N_ZH);
   applyI18n();
   const ds=DATASETS[CODE], ctx=ctxFor(CODE);
+  $("s-mu").value=S.mu;$("s-half").value=S.halfLife;
   const today=new Date();
   END_YEAR=DN(today.getUTCFullYear(),12,31);
   END_MID=DN(today.getUTCFullYear()+1,6,30);
@@ -1183,6 +1366,16 @@ const I18N_ZH={
   "skip.text":"跳到主要内容",
   "group.input":"你的申请","group.answer":"预计结果","group.why":"这个数是怎么来的",
   "group.compare":"早交晚交差多少","group.about":"关于这个估算",
+  "history.title":"最近 6 个月的实际趋势",
+  "history.period":"中国籍 SMC，{from}至{to}实际统计",
+  "history.acc":"受理量","history.dec":"决定量（批准＋拒绝）",
+  "history.latest.acc":"最新月受理","history.latest.dec":"最新月决定","history.latest.oh":"月末在办",
+  "history.change":"较上月 {pct}",
+  "history.flow.title":"每月受理与决定量","history.stock.title":"月末在办量",
+  "history.flow.detail":"{month}：受理 {acc}，决定 {dec}（批准 {approved}，拒绝 {declined}）。",
+  "history.stock.detail":"{month}：月末在办 {oh}。",
+  "history.baseline":"虚线：{from}至{to}平均受理量 {n}。",
+  "history.foot":"中国籍 SMC 汇总计数。点击、悬停或用键盘选中月份可查看数值。决定量包含批准与拒绝；在办量为实际月末快照，三表存在口径差额，不能由受理减决定直接累加推算。",
   "scen.group":"情景选择",
   "prob.gt99":">99%","prob.lt1":"<1%","approx.prefix":"约",
   "sticky.label":"最可能",
@@ -1196,11 +1389,11 @@ const I18N_ZH={
   "answer.cap":"最可能在这天有结果",
   "answer.conservative":"↳ 这个估算偏保守，实际往往会早一点",
   "answer.foot":"结果指移民局给出答复，包含批准和拒签。这个工具算的是<b>什么时候有答案</b>，不是<b>会不会过</b>。",
-  "scen.base":"一切顺利","scen.mix":"最可能","scen.shock":"政策收紧",
-  "scen.note.base":"假设移民局按目前速度稳定处理，不额外考虑新规。",
-  "scen.note.mix":"有三成几率遇上政策变动——这是默认也是推荐的档位。",
-  "scen.note.shock":"假设 8 月新规确实拖慢了审理，不是最可能的结果，是一个偏保守的参照。",
-  "exp.queue":"你前面还排着","exp.capacity":"移民局每个月能处理",
+  "scen.base":"逐步恢复","scen.mix":"最可能","scen.shock":"恢复较慢",
+  "scen.note.base":"从最近实际产能状态出发，按历史估计恢复，也保留再次放缓的风险。",
+  "scen.note.mix":"混合「逐步恢复」与「恢复较慢」两类路径；较慢情景的权重可在下方调整。",
+  "scen.note.shock":"先持续若干个月低产能，再逐步恢复。这是一个偏保守的参照。",
+  "exp.queue":"你前面还排着","exp.capacity":"正常月份处理能力",
   "exp.note":"↳ 这个工具做的事，就是把这两个数放在一起，再考虑一月放假、政策变动、处理速度的波动，模拟两万种可能的未来。",
   "odds.year":"到今年底出结果的可能","odds.mid":"到明年年中出结果的可能",
   "odds.by":"截至 {date}",
@@ -1209,43 +1402,47 @@ const I18N_ZH={
   "cmp.queue":"前面排着 {q}","cmp.unit":" 份","cmp.done":"已出结果","cmp.cta":"换成这个日期 →",
   "d.chart.title":"看每个月的具体概率","d.chart.legend1":"80% 区间内","d.chart.legend2":"区间外",
   "d.adjust.title":"微调假设",
-  "d.adjust.p":"政策收紧的可能性有多大","d.adjust.dur":"一旦收紧会停滞几个月",
-  "d.adjust.mu":"移民局每月能处理多少份","d.adjust.min":"最快也要审这么久",
-  "d.adjust.cal.b":"按历史偏差修正","d.adjust.cal.tag":"（结果会提前约 1 个月）",
+  "d.adjust.p":"恢复较慢情景的权重","d.adjust.dur":"较慢情景先持续低产能多久",
+  "d.adjust.mu":"恢复后的正常月产能","d.adjust.min":"最快也要审这么久",
+  "d.adjust.half":"超额受理量减半需要多久",
+  "d.adjust.arrivalNote":"受理量从最近的 {latest} 逐步回归历史月均 {baseline}；超额部分每 {half} 个月减半。该假设下，第 1、3 个未来月的均值约为 {next}、{third}，并叠加历史波动。此速度是情景假设，未由新政后两个月的数据验证。",
+  "d.adjust.capacityNote":"最近一个月实际决定量为 {actual}；{normal} 是正常月份产能估计，并非每月固定值。模拟继承最近的低产能状态；基准路径中，低产能状态每月约有 {recovery}% 的机会恢复，来自少量历史记录，恢复时间仍不确定。",
+  "d.adjust.cal.b":"按历史偏差修正","d.adjust.cal.tag":"（按回测分位数调整）",
   "d.adjust.cal.note":"↳ 过去的验证显示这个模型总是估得偏慢。勾上就按这个规律往前调。",
   "d.adjust.reset":"恢复默认设定",
   "d.how.title":"这个日期是怎么算出来的",
   "d.how.h1":"基本思路","d.how.p1":"移民局公开数据只有月度汇总，没有逐笔记录。这里用的是排队论：<b>你前面还排着多少人，移民局每月能处理多少</b>。递交时排在你前面的人数 = 上月末在办量 + 当月受理量 × 你在当月的先后位置。之后模拟未来每个月的决定量，累计处理量首次超过你的排队位置的那个月，就是你拿到决定的月份。每次估算跑 20,000 条路径。",
   "d.how.h2":"具体到「几月几日」是怎么来的","d.how.p2":"模型的原生分辨率是<b>月</b>——公开数据只有月度汇总，没有更细的。日期是清队那个月内部按工作日插值出来的参考点，不是预约时间。把它当作 <b>±2 周</b> 的锚点来读；要做实际安排，请用「最慢」那一列。",
   "d.how.h3":"产能怎么模拟",
-  "d.how.l1":"基础水平取近 3 个月的季节调整值。模型会模拟「连着好几个月慢下来」这种情况，不是假设每月速度各自独立。",
+  "d.how.l1":"正常产能取近期 3 个非中断月的季节调整值。最近实际状态作为模拟起点，低产能可能延续，也可能逐步恢复；不会把低谷产能永久外推。",
   "d.how.l2":"<b>季节性</b>：1 月新西兰放暑假，移民局处理量只有平时的四分之一；2 月还没完全恢复。",
-  "d.how.l3":"<b>中断风险</b>：模型本身已经把「突然停摆」的风险算进去了，参照 2025 年 9–10 月那一次——这是<b>「一切顺利」情景就已经包含</b>的内生风险。",
+  "d.how.l3":"<b>中断与恢复</b>：依据历史低产能月份估计进入中断和恢复的概率；正常产能恢复后仍可能再次放缓。样本较少，不能据此承诺恢复时间。",
   "d.how.l4":"<b>排队位置的不确定性</b>：因为有人中途撤回，移民局也可能不完全按先来后到处理。",
   "d.how.h4":"三种情景的区别",
-  "d.how.l5":"<b>一切顺利</b>：只含上面那个内生中断风险。",
-  "d.how.l6":"<b>政策收紧</b>：额外假设 8 月新规确实拖慢了审理，强制中断若干个月，结束后按规律自然退出，可能拖长。",
-  "d.how.l7":"<b>最可能</b>：按设定的概率在上面两者之间加权，默认三成——仅依据 2025 年 9 月那一次先例，可以自己调。",
+  "d.how.l5":"<b>逐步恢复</b>：从最近实际产能状态出发，按历史估计恢复，也保留再次放缓的风险。",
+  "d.how.l6":"<b>恢复较慢</b>：先持续若干个月低产能，再按历史估计恢复。",
+  "d.how.l7":"<b>最可能</b>：混合上述两种路径，较慢情景默认权重 35%，属于可调假设，不是从新政后两个月样本估出的发生概率。",
   "d.how.codes":"数据来源：移民局 R1（决定量）、R7（受理量）、R8（在办量），已按中国国籍筛选。",
   "d.limits.title":"这个估算有哪些做不到的",
-  "d.limits.h1":"模型仍然偏慢约 1 个月","d.limits.p1":"过去的验证显示，实际落点比预测偏早——原因可辨识：移民局产能有几次在 2–4 个月内近乎翻倍，任何只看历史数据的模型都预判不了这种跃升。所以真实落点更可能靠近区间的偏早一端。",
+  "d.limits.h1":"历史回测中预测偏慢","d.limits.p1":"过去的验证显示，实际落点比预测偏早——原因可辨识：移民局产能有几次在 2–4 个月内近乎翻倍，任何只看历史数据的模型都预判不了这种跃升。所以真实落点更可能靠近区间的偏早一端。",
   "d.limits.h2":"假设先进先出","d.limits.p2":"移民局是否严格按递交顺序处理未知，也可能按 EOI 分数或案件复杂度调整顺序。排队位置的估算只部分覆盖了这个风险。",
   "d.limits.h3":"「在办」里有不消耗产能的案子","d.limits.p3":"在办量包含等待补件、体检的滞留案。这些案子占着队列但不消耗当期处理产能，所以对材料齐全的申请人来说，真实排在前面的人可能少于账面值——这是一个方向明确的乐观因素。",
-  "d.limits.scope":"消耗队列速度的数据只统计「技术移民」这一子类，但队列存量的数据统计口径更宽，包含商业类别在内。也就是说队列长度可能被系统性略微高估——这与「模型总是偏慢」的方向是一致的。",
-  "d.limits.h5":"递交日期越靠后，结果越依赖外推","d.limits.p4":"数据截止日期之后的递交日期，模型需要自行推演积压的演变。这个外推在半年内还算可信，再往后就要当作「假设当前产能和受理量都保持不变」的条件结论来读。模型只算排队时间，不含审核本身的固有耗时——第三方 visatimes.nz 显示 SMC 中位处理时长约 50 个工作日（约 2.3 个月）。",
+  "d.limits.scope":"本次 R1、R7、R8 均筛选同一 SMC Skilled Residence 子类别。CSV 不含国籍及主副申请人筛选信息：中国籍由下载条件及历史对照支持，计数是否只含主申请人无法从文件独立确认。",
+  "d.limits.h5":"递交日期越靠后，结果越依赖外推","d.limits.p4":"未来受理量逐步回归新政前水平、产能从低谷恢复，均属于情景假设。新政后目前只有两个月数据，无法验证回落速度或长期产能。递交日期越远，结果越依赖这些假设；最短审核耗时可在「微调假设」中调整。",
   "d.limits.h6":"数据本身","d.limits.p5":"数据覆盖至 {updated}；新数据公布后需要重新估参。",
+  "d.limits.flow":"最新月 R8 在办量与「上月在办 + 受理 − 决定」相差 {residual}，超过随机取整的量级。官方 R8 报表可包含尚未正式受理的递交记录；这可能造成三表不闭合，但差额的具体构成仍无法确认。未强行修正任何实际数据。",
   "footer.text":"数据来源：新西兰移民局公开月度统计 R1（决定量）、R7（受理量）、R8（在办量），已按中国国籍筛选。<br>本工具给出的是概率区间，不是承诺，也不构成移民或法律建议。个人案件的实际处理时间受材料完整度、补件、体检、背景核查等多种因素影响。",
   "err.tooEarly":"这个日期早于可用数据（最早支持 {min}）。",
   "err.tooLate":"递交日期超出本工具支持的范围（最晚 {max}）。",
-  "far.future":"2028 年之后",
+  "far.future":"超出模拟区间",
   "unit.months":"{n} 个月","unit.perMonth":"{n} 份/月",
   "wait.text":"从你交上申请算起，大约还要 {n} 个月",
   "wait.calSuffix":" · 已按历史偏差修正",
   "wait.outOfRange":"超出模拟区间",
   "done.banner":"按模型口径，这个递交时点前面的 {n} 件在 {date} 前后处理完——属于已经出结果的批次，下面的模拟不适用。",
   "done.wait":"据历史实际决定量回推，等待约 {n} 个月",
-  "note.shock":"当前显示的是「政策收紧」的条件情景——它假设确实中断 {n} 个月，不是最可能的结果。",
-  "note.extrapolate":"递交日期距数据截止已超过半年，积压演变完全靠模型外推（假设产能与受理量维持当前水平）。请当作条件结论读。",
+  "note.shock":"当前显示的是「恢复较慢」的条件情景：先持续低产能 {n} 个月，再按历史估计恢复。",
+  "note.extrapolate":"递交日期距数据截止已超过半年，积压演变依赖受理量回落与产能恢复的假设。请当作条件结论读。",
   "note.floor":"这个日期的排队时间已经短到被「最快也要审这么久」顶住了。模型只算排队，不含审核本身的固有耗时，建议把这个值调到 2–3 个月再看。",
   "tl.fastest":"最快 {date}","tl.slowest":"最慢 {date}","tl.today":"今天",
   "tl.tooltip":"到 {date} 为止，出结果的可能约 {pct}",
